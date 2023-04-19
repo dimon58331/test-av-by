@@ -1,0 +1,20 @@
+#Database
+spring.jpa.hibernate.ddl-auto=
+spring.datasource.driver-class-name=
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+#Hibernate properties
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.show-sql=
+
+#Hidden HTTP methods
+spring.mvc.hiddenmethod.filter.enabled=
+
+jwt_secret_key=
+
+#Server errors
+server.error.include-message=
+
+
