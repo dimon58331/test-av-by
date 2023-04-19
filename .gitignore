@@ -1,4 +1,7 @@
 HELP.md
+# Properties files
+*.properties
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -57,9 +60,6 @@ out/
 **.tar.gz
 **.rar
 **.iml
-
-# Properties files
-.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
