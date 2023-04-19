@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public interface UserService extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     /*
     * TODO
     *  Create index for email

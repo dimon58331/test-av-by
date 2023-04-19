@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public interface ImageModelService extends JpaRepository<ImageModel, Long> {
+public interface ImageModelRepository extends JpaRepository<ImageModel, Long> {
     public Optional<ImageModel> findImageModelByUser(User user);
     public Optional<ImageModel> findImageModelByPost(Post post);
 }

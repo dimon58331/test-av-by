@@ -1,7 +1,6 @@
 package by.av.test.testavby.repository;
 
 import by.av.test.testavby.entity.Post;
-import by.av.test.testavby.entity.Transport;
 import by.av.test.testavby.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface TransportService extends JpaRepository<Transport, Long> {
-    public List<Transport> findAllByUserOrderByCreatedDate(User user);
-    public Optional<Transport> findTransportByPost(Post post);
+public interface PostRepository extends JpaRepository<Post, Long> {
+    public List<Post> findPostsByUserOrderByCreatedDateDesc(User user);
+    public List<Post> findAllByOrderByCreatedDateDesc();
+    public Optional<Post> findPostByIdAndUser(Long postId, User user);
 }
