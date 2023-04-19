@@ -19,12 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true, proxyTargetClass = true)
 public class SecurityConfiguration {
-//    private final JWTFilter jwtFilter;
+    private final JWTFilter jwtFilter;
     private final UserDetailsServiceImpl userDetailsService;
     private final JWTAuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService, JWTAuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfiguration(JWTFilter jwtFilter, UserDetailsServiceImpl userDetailsService
+            , JWTAuthenticationEntryPoint authenticationEntryPoint) {
+        this.jwtFilter = jwtFilter;
         this.userDetailsService = userDetailsService;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
