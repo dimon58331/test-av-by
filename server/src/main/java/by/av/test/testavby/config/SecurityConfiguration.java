@@ -21,18 +21,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 //    private final JWTFilter jwtFilter;
     private final UserDetailsServiceImpl userDetailsService;
+    private final JWTAuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService) {
+    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService, JWTAuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
-//    private final JWTAuthenticationEntryPoint authenticationEntryPoint;
-//
 
     @Bean
     public SecurityFilterChain httpSecurity(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(null)
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**", "/error").permitAll()
