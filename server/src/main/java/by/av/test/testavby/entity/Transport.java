@@ -1,5 +1,6 @@
 package by.av.test.testavby.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -54,13 +56,30 @@ public class Transport {
     @Column(name = "color", nullable = false)
     @NotEmpty(message = "Color cannot be empty")
     private String color;
-    @Column(name = "price", nullable = false)
-    @NotNull(message = "Price cannot be null")
-    @Min(value = 0, message = "Price cannot be less than 0")
-    private Double price;
+    /*
+     * TODO
+     *  Check Cascade Type
+     * */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    /*
+     * TODO
+     *  Check Cascade Type
+     * */
     @ManyToMany(mappedBy = "favoriteTransport")
     private Set<User> favoriteUsers = new HashSet<>();
+    /*
+     * TODO
+     *  Check Cascade Type
+     * */
+    @OneToOne(mappedBy = "transport")
+    private Post post;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(updatable = false, name = "created_date")
+    private LocalDateTime createdDate;
+    @PrePersist
+    protected void onCreate(){
+        this.createdDate = LocalDateTime.now();
+    }
 }
