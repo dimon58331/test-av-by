@@ -6,7 +6,7 @@ spring.datasource.username=
 spring.datasource.password=
 
 #Hibernate properties
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.dialect=
 spring.jpa.show-sql=
 
 #Hidden HTTP methods
