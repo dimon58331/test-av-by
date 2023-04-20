@@ -29,6 +29,7 @@ public class PostService {
     *  Check transport
     * */
 
+    @Transactional
     public Post createPost(Post post, Principal principal){
         User user = convertPrincipalToUser(principal);
         post.setUser(user);
