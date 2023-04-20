@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -38,6 +39,38 @@ public class PostController {
 
         Post createdPost = postService.createPost(convertPostDTOToPost(postDTO), principal);
         return new ResponseEntity<>(convertPostToPostDTO(createdPost), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PostDTO>> getAllPosts(){
+        List<PostDTO> postDTOList = postService.getAllPosts().stream().map(this::convertPostToPostDTO).toList();
+        return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/posts")
+    public ResponseEntity<List<PostDTO>> getAllPostsByPrincipal(Principal principal){
+        List<PostDTO> postDTOList = postService.getAllPostsByPrincipal(principal).stream()
+                .map(this::convertPostToPostDTO).toList();
+        return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+    }
+
+    @PostMapping("/{postId}/delete")
+    public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal){
+        postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
+
+        return ResponseEntity.ok("Post deleted successfully");
+    }
+
+    @PostMapping("/{postId}/update")
+    public ResponseEntity<Object> updatePost(@PathVariable("postId") String postId, @Valid @RequestBody PostDTO postDTO
+            , BindingResult result, Principal principal){
+        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
+        if (Objects.nonNull(errors)) return errors;
+
+        postDTO.setId(Long.parseLong(postId));
+        Post updatedPost = postService.updateByPostAndPrincipal(convertPostDTOToPost(postDTO), principal);
+
+        return new ResponseEntity<>(convertPostToPostDTO(updatedPost), HttpStatus.OK);
     }
 
     private Post convertPostDTOToPost(PostDTO postDTO){

@@ -2,15 +2,18 @@ package by.av.test.testavby.service;
 
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.User;
+import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
 import by.av.test.testavby.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,9 +34,36 @@ public class PostService {
 
     @Transactional
     public Post createPost(Post post, Principal principal){
-        User user = convertPrincipalToUser(principal);
-        post.setUser(user);
+        post.setUser(convertPrincipalToUser(principal));
         return postRepository.save(post);
+    }
+
+    public List<Post> getAllPosts(){
+        return postRepository.findAllByOrderByCreatedDateDesc();
+    }
+
+    public List<Post> getAllPostsByPrincipal(Principal principal){
+        return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal));
+    }
+
+    @Transactional
+    public void deletePostByIdAndPrincipal(Long postId, Principal principal){
+        postRepository.deletePostByIdAndUser(postId, convertPrincipalToUser(principal));
+    }
+
+    @Transactional
+    public Post updateByPostAndPrincipal(Post post, Principal principal){
+        Optional<Post> postOptional = postRepository.findPostByIdAndUser(post.getId(), convertPrincipalToUser(principal));
+        if (postOptional.isEmpty()){
+            throw new PostNotFoundException("Post cannot be update");
+        }
+        Post updatedPost = postOptional.get();
+        updatedPost.setTransport(post.getTransport());
+        updatedPost.setPrice(post.getPrice());
+        updatedPost.setTitle(post.getTitle());
+        updatedPost.setCaption(post.getCaption());
+
+        return postRepository.save(updatedPost);
     }
 
     private User convertPrincipalToUser(Principal principal) {
