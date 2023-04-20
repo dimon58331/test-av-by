@@ -31,8 +31,6 @@ public class Post {
     @JoinColumn(name = "transport_id", referencedColumnName = "id")
     private Transport transport;
     @Column(name = "price", nullable = false)
-    @NotNull(message = "Price cannot be null")
-    @Min(value = 0, message = "Price cannot be less than 0")
     private Double price;
     @Column(name = "title")
     private String title;

@@ -60,13 +60,6 @@ public class Transport {
      * TODO
      *  Check Cascade Type
      * */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-    /*
-     * TODO
-     *  Check Cascade Type
-     * */
     @ManyToMany(mappedBy = "favoriteTransport")
     private Set<User> favoriteUsers = new HashSet<>();
     /*
