@@ -14,7 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 
 public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    private final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationEntryPoint.class);
+    private final Logger LOG = LoggerFactory.get Logger(JWTAuthenticationEntryPoint.class);
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         LOG.atInfo().log("Bad credentials");
