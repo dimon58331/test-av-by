@@ -1,10 +1,10 @@
 package by.av.test.testavby;
 
 import by.av.test.testavby.config.JWTAuthenticationEntryPoint;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.web.AuthenticationEntryPoint;
 
 @SpringBootApplication
 public class TestAvByApplication {
@@ -16,5 +16,10 @@ public class TestAvByApplication {
 	@Bean
 	public JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
 		return new JWTAuthenticationEntryPoint();
+	}
+
+	@Bean
+	public ModelMapper modelMapper(){
+		return new ModelMapper();
 	}
 }

@@ -1,5 +1,6 @@
 package by.av.test.testavby.controller;
 
+import by.av.test.testavby.entity.User;
 import by.av.test.testavby.payload.request.AuthenticationRequest;
 import by.av.test.testavby.payload.request.RegistrationRequest;
 import by.av.test.testavby.payload.response.JWTSuccessResponse;
@@ -7,7 +8,9 @@ import by.av.test.testavby.validator.ResponseErrorValidation;
 import by.av.test.testavby.service.UserService;
 import by.av.test.testavby.util.JWTUtil;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,14 +29,16 @@ public class AuthorizationController {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final ResponseErrorValidation responseErrorValidation;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public AuthorizationController(UserService userService, AuthenticationManager authenticationManager, JWTUtil jwtUtil,
-                                   ResponseErrorValidation responseErrorValidation) {
+                                   ResponseErrorValidation responseErrorValidation, ModelMapper modelMapper) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.responseErrorValidation = responseErrorValidation;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/signin")
@@ -55,6 +60,13 @@ public class AuthorizationController {
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest,
                                                BindingResult result){
-        return null;
+        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
+        if (Objects.nonNull(errors)) return errors;
+        userService.createUser(convertRequestToUser(registrationRequest));
+        return ResponseEntity.ok("Successfully");
+    }
+
+    private User convertRequestToUser(RegistrationRequest registrationRequest){
+        return modelMapper.map(registrationRequest, User.class);
     }
 }
