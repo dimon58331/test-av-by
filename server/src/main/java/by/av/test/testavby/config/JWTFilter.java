@@ -43,8 +43,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
             try {
                 LOG.atInfo().log("Before check jwt token");
-                String username = jwtUtil.validateTokenAndRetrieveClaim(jwtToken);
-                UserDetailsImpl personDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(username);
+                String email = jwtUtil.validateTokenAndRetrieveClaim(jwtToken);
+                UserDetailsImpl personDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         personDetails, personDetails.getPassword(), personDetails.getAuthorities());
