@@ -1,6 +1,7 @@
 package by.av.test.testavby.controller;
 
 import by.av.test.testavby.payload.request.AuthenticationRequest;
+import by.av.test.testavby.payload.request.RegistrationRequest;
 import by.av.test.testavby.payload.response.JWTSuccessResponse;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import by.av.test.testavby.service.UserService;
@@ -27,16 +28,17 @@ public class AuthorizationController {
     private final ResponseErrorValidation responseErrorValidation;
 
     @Autowired
-    public AuthorizationController(UserService userService, AuthenticationManager authenticationManager, JWTUtil jwtUtil, ResponseErrorValidation responseErrorValidation) {
+    public AuthorizationController(UserService userService, AuthenticationManager authenticationManager, JWTUtil jwtUtil,
+                                   ResponseErrorValidation responseErrorValidation) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @GetMapping("/signin")
-    public ResponseEntity<Object> authenticateUser(
-            @Valid @RequestBody AuthenticationRequest authenticationRequest, BindingResult result){
+    @PostMapping("/signin")
+    public ResponseEntity<Object> authenticateUser(@Valid @RequestBody AuthenticationRequest authenticationRequest,
+                                                   BindingResult result){
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
 
@@ -48,5 +50,11 @@ public class AuthorizationController {
         String token = jwtUtil.generateToken(authenticationRequest.getEmail());
 
         return ResponseEntity.ok(new JWTSuccessResponse(true, token));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest,
+                                               BindingResult result){
+        return null;
     }
 }

@@ -22,24 +22,16 @@ public class User {
     @Column(name = "id")
     private Long id;
     @Column(name = "first_name", nullable = false)
-    @NotEmpty(message = "Firstname cannot be empty")
     private String firstName;
     @Column(name = "last_name", nullable = false)
-    @NotEmpty(message = "Lastname cannot be empty")
     private String lastName;
     @Column(name = "patronymic")
     private String patronymic;
     @Column(name = "password", nullable = false)
-    @NotEmpty(message = "Password cannot be empty")
     private String password;
     @Column(name = "email", unique = true, nullable = false)
-    @NotEmpty(message = "Email cannot be empty")
-    @Email(regexp = "^\\S+@\\S+\\.\\S+$", message = "Email should be like 'test@test.test'")
     private String email;
     @Column(name = "phone_number", unique = true, nullable = false)
-    @NotEmpty(message = "Phone number cannot be empty")
-    @Pattern(regexp = "^\\+?[1-9][0-9]{12,13}$",
-            message = "Phone number should be like '(+)375000000000, length 12-13 digits'")
     private String phoneNumber;
     /*
     * TODO
