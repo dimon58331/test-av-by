@@ -1,9 +1,11 @@
 package by.av.test.testavby.payload.request;
 
+import by.av.test.testavby.annotation.PasswordMatches;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
+@PasswordMatches
 public class RegistrationRequest {
     @NotEmpty(message = "This field must be filled in")
     private String firstName;
