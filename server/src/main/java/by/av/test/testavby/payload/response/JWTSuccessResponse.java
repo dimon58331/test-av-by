@@ -8,7 +8,7 @@ public class JWTSuccessResponse {
     private String token;
 
     public JWTSuccessResponse(boolean success, String token) {
-        this.token = token;
+        this.token = "Bearer " + token;
         this.success = success;
     }
 }
