@@ -4,6 +4,7 @@ import by.av.test.testavby.entity.User;
 import by.av.test.testavby.payload.request.AuthenticationRequest;
 import by.av.test.testavby.payload.request.RegistrationRequest;
 import by.av.test.testavby.payload.response.JWTSuccessResponse;
+import by.av.test.testavby.payload.response.MessageResponse;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import by.av.test.testavby.service.UserService;
 import by.av.test.testavby.util.JWTUtil;
@@ -63,7 +64,7 @@ public class AuthorizationController {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
         userService.createUser(convertRequestToUser(registrationRequest));
-        return ResponseEntity.ok("Successfully");
+        return ResponseEntity.ok(new MessageResponse("Successfully"));
     }
 
     private User convertRequestToUser(RegistrationRequest registrationRequest){

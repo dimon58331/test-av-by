@@ -2,6 +2,7 @@ package by.av.test.testavby.controller;
 
 import by.av.test.testavby.dto.PostDTO;
 import by.av.test.testavby.entity.Post;
+import by.av.test.testavby.payload.response.MessageResponse;
 import by.av.test.testavby.service.PostService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
@@ -58,12 +59,12 @@ public class PostController {
     public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal){
         postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
 
-        return ResponseEntity.ok("Post deleted successfully");
+        return ResponseEntity.ok(new MessageResponse("Post deleted successfully"));
     }
 
     @PostMapping("/{postId}/update")
-    public ResponseEntity<Object> updatePost(@PathVariable("postId") String postId, @Valid @RequestBody PostDTO postDTO
-            , BindingResult result, Principal principal){
+    public ResponseEntity<Object> updatePost(@PathVariable("postId") String postId, @Valid @RequestBody PostDTO postDTO,
+                                             BindingResult result, Principal principal){
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
 
