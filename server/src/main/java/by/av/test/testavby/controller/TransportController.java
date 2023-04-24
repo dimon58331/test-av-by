@@ -40,6 +40,12 @@ public class TransportController {
         return ResponseEntity.ok(convertTransportToTransportDTO(createdTransport));
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<TransportDTO> getTransport(@PathVariable("postId") String postId){
+        Transport transport = transportService.getTransportByPostId(Long.parseLong(postId));
+        return ResponseEntity.ok(convertTransportToTransportDTO(transport));
+    }
+
     private Transport convertTransportDTOToTransport(TransportDTO transportDTO) {
         return modelMapper.map(transportDTO, Transport.class);
     }
