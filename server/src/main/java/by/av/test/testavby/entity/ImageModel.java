@@ -18,6 +18,7 @@ public class ImageModel {
     /*
     * TODO
     *  Check Cascade Type
+    *  Maybe delete this field
     * */
     @JsonIgnore
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

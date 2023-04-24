@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/api/transport")
 public class TransportController {
+    /* TODO
+    *   Maybe delete this controller or create it how constants
+    * */
 }
