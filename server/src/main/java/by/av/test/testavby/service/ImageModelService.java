@@ -3,6 +3,7 @@ package by.av.test.testavby.service;
 import by.av.test.testavby.entity.ImageModel;
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.User;
+import by.av.test.testavby.exception.ImageModelNotFoundException;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.ImageModelRepository;
@@ -48,6 +49,15 @@ public class ImageModelService {
         imageModel.setImageBytes(compressBytes(file.getBytes()));
 
         imageModelRepository.save(imageModel);
+    }
+
+    public ImageModel getPostImage(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+        ImageModel imageModel = imageModelRepository.findImageModelByPost(post).orElseThrow(
+                () -> new ImageModelNotFoundException("Image cannot be found")
+        );
+        imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
+        return imageModel;
     }
 
     private User convertPrincipalToUser(Principal principal) {
