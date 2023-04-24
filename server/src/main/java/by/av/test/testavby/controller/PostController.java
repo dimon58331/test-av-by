@@ -39,20 +39,20 @@ public class PostController {
         if (Objects.nonNull(errors)) return errors;
 
         Post createdPost = postService.createPost(convertPostDTOToPost(postDTO), principal);
-        return new ResponseEntity<>(convertPostToPostDTO(createdPost), HttpStatus.OK);
+        return ResponseEntity.ok(convertPostToPostDTO(createdPost));
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<PostDTO>> getAllPosts(){
         List<PostDTO> postDTOList = postService.getAllPosts().stream().map(this::convertPostToPostDTO).toList();
-        return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+        return ResponseEntity.ok(postDTOList);
     }
 
     @GetMapping("/user/posts")
     public ResponseEntity<List<PostDTO>> getAllPostsByPrincipal(Principal principal){
         List<PostDTO> postDTOList = postService.getAllPostsByPrincipal(principal).stream()
                 .map(this::convertPostToPostDTO).toList();
-        return new ResponseEntity<>(postDTOList, HttpStatus.OK);
+        return ResponseEntity.ok(postDTOList);
     }
 
     @PostMapping("/{postId}/delete")
@@ -71,7 +71,7 @@ public class PostController {
         postDTO.setId(Long.parseLong(postId));
         Post updatedPost = postService.updateByPostAndPrincipal(convertPostDTOToPost(postDTO), principal);
 
-        return new ResponseEntity<>(convertPostToPostDTO(updatedPost), HttpStatus.OK);
+        return ResponseEntity.ok(convertPostToPostDTO(updatedPost));
     }
 
     private Post convertPostDTOToPost(PostDTO postDTO){

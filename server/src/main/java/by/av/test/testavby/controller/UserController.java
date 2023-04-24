@@ -43,7 +43,7 @@ public class UserController {
 
         User updatedUser = userService.updateByUserAndPrincipal(convertUserDTOToUser(userDTO), principal);
 
-        return new ResponseEntity<>(convertUserToUserDTO(updatedUser), HttpStatus.OK);
+        return ResponseEntity.ok(convertUserToUserDTO(updatedUser));
     }
 
     private User convertUserDTOToUser(UserDTO userDTO){
