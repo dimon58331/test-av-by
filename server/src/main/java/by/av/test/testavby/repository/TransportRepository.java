@@ -11,6 +11,5 @@ import java.util.Optional;
 
 @Service
 public interface TransportRepository extends JpaRepository<Transport, Long> {
-    public List<Transport> findAllByUserOrderByCreatedDate(User user);
     public Optional<Transport> findTransportByPost(Post post);
 }

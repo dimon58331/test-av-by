@@ -3,9 +3,6 @@ package by.av.test.testavby.entity;
 import by.av.test.testavby.util.ERole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -22,9 +19,9 @@ public class User {
     @Column(name = "id")
     private Long id;
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    private String firstname;
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    private String lastname;
     @Column(name = "patronymic")
     private String patronymic;
     @Column(name = "password", nullable = false)

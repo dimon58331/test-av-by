@@ -30,6 +30,11 @@ public class UserController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
+    @GetMapping("")
+    public ResponseEntity<UserDTO> getCurrentUser(Principal principal){
+        return ResponseEntity.ok(convertUserToUserDTO(userService.getCurrentUserByPrincipal(principal)));
+    }
+
     @PostMapping("/update")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDTO userDTO, BindingResult result,
                                              Principal principal){

@@ -3,7 +3,6 @@ package by.av.test.testavby.service;
 import by.av.test.testavby.entity.ImageModel;
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.User;
-import by.av.test.testavby.exception.ImageNotUpload;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.ImageModelRepository;
@@ -40,9 +39,6 @@ public class ImageModelService {
     public void uploadImageToPost(Long postId, MultipartFile file) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
 
-        if (!post.getUser().getId().equals(postId)){
-            throw new ImageNotUpload("Image cannot be uploaded to this post");
-        }
         Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
         imageModelOptional.ifPresent(imageModelRepository::delete);
 
