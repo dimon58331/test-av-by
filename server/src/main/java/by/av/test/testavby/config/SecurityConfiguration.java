@@ -1,6 +1,7 @@
 package by.av.test.testavby.config;
 
 import by.av.test.testavby.security.UserDetailsServiceImpl;
+import by.av.test.testavby.util.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**", "/error").permitAll()
+                .requestMatchers("/api/admin/**").hasAuthority(ERole.ROLE_ADMIN.name())
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
