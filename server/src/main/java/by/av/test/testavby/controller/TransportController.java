@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -26,6 +27,13 @@ public class TransportController {
         this.modelMapper = modelMapper;
         this.transportService = transportService;
         this.responseErrorValidation = responseErrorValidation;
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<TransportDTO>> getAllTransport(){
+        List<TransportDTO> transportDTOList = transportService.getAllTransport().stream()
+                .map(this::convertTransportToTransportDTO).toList();
+        return ResponseEntity.ok(transportDTOList);
     }
 
     @PostMapping("/{postId}/create")
