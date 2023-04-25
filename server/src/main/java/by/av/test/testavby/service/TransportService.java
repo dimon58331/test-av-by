@@ -36,6 +36,11 @@ public class TransportService {
         return transportRepository.save(transport);
     }
 
+    @Transactional
+    public Transport createTransport(Transport transport){
+        return transportRepository.save(transport);
+    }
+
     public List<Transport> getAllTransport(){
         return transportRepository.findAll();
     }
