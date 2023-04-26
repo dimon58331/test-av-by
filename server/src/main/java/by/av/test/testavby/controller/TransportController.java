@@ -7,11 +7,11 @@ import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -29,11 +29,9 @@ public class TransportController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<TransportDTO>> getAllTransport(){
-        List<TransportDTO> transportDTOList = transportService.getAllTransport().stream()
-                .map(this::convertTransportToTransportDTO).toList();
-        return ResponseEntity.ok(transportDTOList);
+    @GetMapping(value = "/all", params = {"size", "page"})
+    public Page<TransportDTO> getAllTransport(@RequestParam("size") int size, @RequestParam("page") int page){
+        return transportService.getAllTransportSortByBrand(size, page).map(this::convertTransportToTransportDTO);
     }
 
     @PostMapping("/{postId}/create")

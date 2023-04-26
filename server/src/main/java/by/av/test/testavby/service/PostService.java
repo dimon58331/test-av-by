@@ -7,6 +7,10 @@ import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
 import by.av.test.testavby.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,12 +41,13 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<Post> getAllPosts(){
-        return postRepository.findAllByOrderByCreatedDateDesc();
+    public Page<Post> getAllPosts(int page, int size){
+        return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
     }
 
-    public List<Post> getAllPostsByPrincipal(Principal principal){
-        return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal));
+    public Page<Post> getAllPostsByPrincipal(Principal principal, int page, int size){
+        return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal),
+                PageRequest.of(page, size));
     }
 
     @Transactional

@@ -7,8 +7,10 @@ import by.av.test.testavby.service.PostService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ public class PostController {
     private final PostService postService;
     private final ModelMapper modelMapper;
     private final ResponseErrorValidation responseErrorValidation;
+    private final Logger LOG = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
     public PostController(PostService postService, ModelMapper modelMapper, ResponseErrorValidation responseErrorValidation) {
@@ -42,17 +45,15 @@ public class PostController {
         return ResponseEntity.ok(convertPostToPostDTO(createdPost));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PostDTO>> getAllPosts(){
-        List<PostDTO> postDTOList = postService.getAllPosts().stream().map(this::convertPostToPostDTO).toList();
-        return ResponseEntity.ok(postDTOList);
+    @GetMapping(value = "/all", params = {"page", "size"})
+    public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size){
+        return postService.getAllPosts(page, size).map(this::convertPostToPostDTO);
     }
 
-    @GetMapping("/user/posts")
-    public ResponseEntity<List<PostDTO>> getAllPostsByPrincipal(Principal principal){
-        List<PostDTO> postDTOList = postService.getAllPostsByPrincipal(principal).stream()
-                .map(this::convertPostToPostDTO).toList();
-        return ResponseEntity.ok(postDTOList);
+    @GetMapping(value = "/user/posts", params = {"page", "size"})
+    public Page<PostDTO> getAllPostsByPrincipal(Principal principal, @RequestParam("page") int page,
+                                                                @RequestParam("size") int size){
+        return postService.getAllPostsByPrincipal(principal, page, size).map(this::convertPostToPostDTO);
     }
 
     @PostMapping("/{postId}/delete")

@@ -8,10 +8,12 @@ import by.av.test.testavby.exception.TransportNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
 import by.av.test.testavby.repository.TransportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -41,8 +43,8 @@ public class TransportService {
         return transportRepository.save(transport);
     }
 
-    public List<Transport> getAllTransport(){
-        return transportRepository.findAll();
+    public Page<Transport> getAllTransportSortByBrand(int size, int page){
+        return transportRepository.findAll(PageRequest.of(page, size, Sort.by("brand")));
     }
 
     public Transport getTransportByPostId(Long postId){
