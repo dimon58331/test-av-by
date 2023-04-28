@@ -1,16 +1,9 @@
 package by.av.test.testavby.dto;
 
-import by.av.test.testavby.entity.Post;
-import by.av.test.testavby.entity.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 public class TransportDTO {

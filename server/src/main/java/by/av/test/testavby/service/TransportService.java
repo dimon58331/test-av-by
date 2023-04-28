@@ -1,7 +1,7 @@
 package by.av.test.testavby.service;
 
 import by.av.test.testavby.entity.Post;
-import by.av.test.testavby.entity.Transport;
+import by.av.test.testavby.entity.transport.Transport;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.TransportExistsException;
 import by.av.test.testavby.exception.TransportNotFoundException;

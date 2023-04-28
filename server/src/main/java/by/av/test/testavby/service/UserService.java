@@ -4,7 +4,7 @@ import by.av.test.testavby.entity.User;
 import by.av.test.testavby.exception.UserExistsException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.UserRepository;
-import by.av.test.testavby.util.ERole;
+import by.av.test.testavby.enums.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package by.av.test.testavby.util;
+package by.av.test.testavby.enums;
 
 public enum ERole {
     ROLE_USER,
