@@ -1,5 +1,6 @@
-package by.av.test.testavby.dto;
+package by.av.test.testavby.dto.transport;
 
+import by.av.test.testavby.enums.ETypeEngine;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,14 +9,11 @@ import lombok.Data;
 @Data
 public class TransportDTO {
     private Long id;
-    @NotEmpty(message = "Model cannot be empty")
-    private String model;
-    @NotEmpty(message = "Brand cannot be empty")
-    private String brand;
+    private TransportModelDTO transportModel;
     @NotNull(message = "Release date cannot be null")
     private Integer releaseYear;
     @NotEmpty(message = "Engine type cannot be empty")
-    private String engineType;
+    private ETypeEngine eTypeEngine;
     @NotNull(message = "Engine capacity cannot be null")
     @Min(value = 0, message = "Engine capacity cannot be less than 0")
     private Double engineCapacity;

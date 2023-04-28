@@ -44,7 +44,7 @@ public class TransportService {
     }
 
     public Page<Transport> getAllTransportSortByBrand(int size, int page){
-        return transportRepository.findAll(PageRequest.of(page, size, Sort.by("brand")));
+        return transportRepository.findAll(PageRequest.of(page, size));
     }
 
     public Transport getTransportByPostId(Long postId){

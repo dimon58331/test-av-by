@@ -1,6 +1,6 @@
 package by.av.test.testavby.controller;
 
-import by.av.test.testavby.dto.TransportDTO;
+import by.av.test.testavby.dto.transport.TransportDTO;
 import by.av.test.testavby.entity.transport.Transport;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
