@@ -1,4 +1,4 @@
-package by.av.test.testavby.repository;
+package by.av.test.testavby.repository.transport;
 
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.transport.Transport;

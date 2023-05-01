@@ -22,15 +22,8 @@ public class Post {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "favorite_post"
-            , joinColumns = @JoinColumn(name = "post_id")
-            , inverseJoinColumns = @JoinColumn(name = "user_id")
-            , foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
-            , inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
-    )
-    private Set<User> favoriteUsers = new HashSet<>();
+    @ElementCollection(targetClass = String.class)
+    private Set<String> likedUsers = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "transport_id", referencedColumnName = "id")

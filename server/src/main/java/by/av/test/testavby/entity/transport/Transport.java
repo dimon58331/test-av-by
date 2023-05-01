@@ -33,7 +33,7 @@ public class Transport {
     @Column(name = "release_year", nullable = false)
     private Integer releaseYear;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private ETypeEngine eTypeEngine;
 
     @OneToMany(mappedBy = "transport")

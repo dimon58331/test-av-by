@@ -4,15 +4,11 @@ import by.av.test.testavby.dto.transport.TransportDTO;
 import by.av.test.testavby.entity.transport.Transport;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -34,14 +30,11 @@ public class TransportController {
         return transportService.getAllTransportSortByBrand(size, page).map(this::convertTransportToTransportDTO);
     }
 
-    @PostMapping("/{postId}/create")
-    public ResponseEntity<Object> createTransport(@Valid @RequestBody TransportDTO transportDTO, BindingResult result,
-                                                  @PathVariable("postId") String postId) {
-        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
-        if (Objects.nonNull(errors)) return errors;
-
-        Transport createdTransport = transportService.createTransportForPost(Long.parseLong(postId),
-                convertTransportDTOToTransport(transportDTO));
+    @PostMapping("/{postId}/{transportId}/create")
+    public ResponseEntity<Object> addTransportToPost(@PathVariable("transportId") String transportId,
+                                                     @PathVariable("postId") String postId) {
+        Transport createdTransport = transportService
+                .addTransportForPost(Long.parseLong(postId), Long.parseLong(transportId));
 
         return ResponseEntity.ok(convertTransportToTransportDTO(createdTransport));
     }

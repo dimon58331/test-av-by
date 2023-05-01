@@ -41,16 +41,6 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Post> posts;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "favorite_post"
-            , joinColumns = @JoinColumn(name = "user_id")
-            , inverseJoinColumns = @JoinColumn(name = "post_id")
-            , foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
-            , inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
-    )
-    private Set<Post> favoritePost = new HashSet<>();
-
     @Column(name = "role")
     @ElementCollection(targetClass = ERole.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "person_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

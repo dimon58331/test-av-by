@@ -2,6 +2,7 @@ package by.av.test.testavby.controller;
 
 import by.av.test.testavby.dto.transport.TransportDTO;
 import by.av.test.testavby.entity.transport.Transport;
+import by.av.test.testavby.enums.ETypeEngine;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
@@ -29,11 +30,14 @@ public class AdminController {
     }
 
     @PostMapping("/transport/create")
-    public ResponseEntity<Object> createTransport(@Valid @RequestBody TransportDTO transportDTO, BindingResult result){
+    public ResponseEntity<Object> createTransport(@Valid @RequestBody TransportDTO transportDTO,
+                                                  @RequestParam("engineType") ETypeEngine eTypeEngine,
+                                                  BindingResult result){
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
 
-        Transport createdTransport = transportService.createTransport(convertTransportDTOToTransport(transportDTO));
+        Transport createdTransport = transportService
+                .createTransport(convertTransportDTOToTransport(transportDTO), eTypeEngine);
 
         return ResponseEntity.ok(convertTransportToTransportDTO(createdTransport));
     }

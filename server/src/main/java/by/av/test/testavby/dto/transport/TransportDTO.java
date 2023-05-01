@@ -12,8 +12,6 @@ public class TransportDTO {
     private TransportModelDTO transportModel;
     @NotNull(message = "Release date cannot be null")
     private Integer releaseYear;
-    @NotEmpty(message = "Engine type cannot be empty")
-    private ETypeEngine eTypeEngine;
     @NotNull(message = "Engine capacity cannot be null")
     @Min(value = 0, message = "Engine capacity cannot be less than 0")
     private Double engineCapacity;

@@ -6,23 +6,24 @@ import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
 import by.av.test.testavby.repository.UserRepository;
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final Logger LOG = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
     public PostService(PostRepository postRepository, UserRepository userRepository) {
@@ -57,17 +58,31 @@ public class PostService {
 
     @Transactional
     public Post updateByPostAndPrincipal(Post post, Principal principal){
-        Optional<Post> postOptional = postRepository.findPostByIdAndUser(post.getId(), convertPrincipalToUser(principal));
-        if (postOptional.isEmpty()){
-            throw new PostNotFoundException("Post cannot be update");
-        }
-        Post updatedPost = postOptional.get();
+        Post updatedPost = postRepository.findPostByIdAndUser(post.getId(), convertPrincipalToUser(principal))
+                .orElseThrow(()->new PostNotFoundException("Post cannot be update"));
+
         updatedPost.setTransport(post.getTransport());
         updatedPost.setPrice(post.getPrice());
         updatedPost.setTitle(post.getTitle());
         updatedPost.setCaption(post.getCaption());
 
         return postRepository.save(updatedPost);
+    }
+
+    @Transactional
+    public boolean likePost(Long postId, Principal principal){
+        Post post = postRepository.findById(postId).orElseThrow(()->new PostNotFoundException("Post cannot be found"));
+        User currentUser = convertPrincipalToUser(principal);
+        if (currentUser.getPosts().stream().noneMatch(post1 -> Objects.equals(post1.getId(), post.getId()))){
+            throw new PostNotFoundException("Post doesn't belong to the user");
+        }
+        if (post.getLikedUsers().contains(currentUser.getEmail())){
+            post.getLikedUsers().remove(currentUser.getEmail());
+            return false;
+        } else {
+            post.getLikedUsers().add(currentUser.getEmail());
+            return true;
+        }
     }
 
     private User convertPrincipalToUser(Principal principal) {

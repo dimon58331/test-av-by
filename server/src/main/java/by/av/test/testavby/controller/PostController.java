@@ -63,6 +63,13 @@ public class PostController {
         return ResponseEntity.ok(new MessageResponse("Post deleted successfully"));
     }
 
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Object> addFavoritePost(@PathVariable("postId") String postId, Principal principal){
+        return postService.likePost(Long.parseLong(postId), principal)
+                ? ResponseEntity.ok(new MessageResponse("Post liked successfully"))
+                : ResponseEntity.ok(new MessageResponse("Post unliked successfully"));
+    }
+
     @PostMapping("/{postId}/update")
     public ResponseEntity<Object> updatePost(@PathVariable("postId") String postId, @Valid @RequestBody PostDTO postDTO,
                                              BindingResult result, Principal principal){
