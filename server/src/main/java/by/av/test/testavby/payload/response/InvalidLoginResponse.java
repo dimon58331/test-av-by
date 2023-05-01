@@ -1,6 +1,5 @@
 package by.av.test.testavby.payload.response;
 
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

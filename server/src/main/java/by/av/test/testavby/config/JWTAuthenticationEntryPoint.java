@@ -16,7 +16,8 @@ import java.io.IOException;
 public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationEntryPoint.class);
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+            throws IOException {
         LOG.atInfo().log("Bad credentials");
         InvalidLoginResponse invalidLoginResponse = new InvalidLoginResponse();
         String jsonInvalidLoginResponse = new ObjectMapper().writeValueAsString(invalidLoginResponse);

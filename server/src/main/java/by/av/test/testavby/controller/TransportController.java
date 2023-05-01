@@ -19,7 +19,8 @@ public class TransportController {
     private final ResponseErrorValidation responseErrorValidation;
 
     @Autowired
-    public TransportController(ModelMapper modelMapper, TransportService transportService, ResponseErrorValidation responseErrorValidation) {
+    public TransportController(ModelMapper modelMapper, TransportService transportService,
+                               ResponseErrorValidation responseErrorValidation) {
         this.modelMapper = modelMapper;
         this.transportService = transportService;
         this.responseErrorValidation = responseErrorValidation;

@@ -29,7 +29,8 @@ public class PostController {
     private final Logger LOG = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostService postService, ModelMapper modelMapper, ResponseErrorValidation responseErrorValidation) {
+    public PostController(PostService postService, ModelMapper modelMapper,
+                          ResponseErrorValidation responseErrorValidation) {
         this.postService = postService;
         this.modelMapper = modelMapper;
         this.responseErrorValidation = responseErrorValidation;

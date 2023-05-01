@@ -30,7 +30,8 @@ public class ImageModelService {
     private final UserRepository userRepository;
 
     @Autowired
-    public ImageModelService(ImageModelRepository imageModelRepository, PostRepository postRepository, UserRepository userRepository) {
+    public ImageModelService(ImageModelRepository imageModelRepository, PostRepository postRepository,
+                             UserRepository userRepository) {
         this.imageModelRepository = imageModelRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;

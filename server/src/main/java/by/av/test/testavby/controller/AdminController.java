@@ -24,7 +24,8 @@ public class AdminController {
     private final ResponseErrorValidation responseErrorValidation;
 
     @Autowired
-    public AdminController(TransportService transportService, ModelMapper modelMapper, ResponseErrorValidation responseErrorValidation) {
+    public AdminController(TransportService transportService, ModelMapper modelMapper,
+                           ResponseErrorValidation responseErrorValidation) {
         this.transportService = transportService;
         this.modelMapper = modelMapper;
         this.responseErrorValidation = responseErrorValidation;

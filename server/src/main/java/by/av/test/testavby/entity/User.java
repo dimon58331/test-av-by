@@ -1,6 +1,5 @@
 package by.av.test.testavby.entity;
 
-import by.av.test.testavby.entity.transport.Transport;
 import by.av.test.testavby.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

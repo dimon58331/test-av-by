@@ -25,7 +25,8 @@ public class UserController {
     private final ResponseErrorValidation responseErrorValidation;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper, ResponseErrorValidation responseErrorValidation) {
+    public UserController(UserService userService, ModelMapper modelMapper,
+                          ResponseErrorValidation responseErrorValidation) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.responseErrorValidation = responseErrorValidation;
