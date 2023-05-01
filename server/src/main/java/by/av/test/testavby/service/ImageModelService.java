@@ -37,8 +37,9 @@ public class ImageModelService {
     }
 
     @Transactional
-    public void uploadImageToPost(Long postId, MultipartFile file) throws IOException {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+    public void uploadImageToPost(Long postId, MultipartFile file, Principal principal) throws IOException {
+        Post post = postRepository.findPostByIdAndUser(postId, convertPrincipalToUser(principal))
+                .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
 
         Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
         imageModelOptional.ifPresent(imageModelRepository::delete);

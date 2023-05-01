@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @CrossOrigin
@@ -23,8 +24,9 @@ public class ImageModelController {
 
     @PostMapping("/{postId}/upload")
     public ResponseEntity<Object> uploadImageToPost(@PathVariable("postId") String postId,
-                                                    @RequestParam("file") MultipartFile file) throws IOException {
-        imageModelService.uploadImageToPost(Long.parseLong(postId), file);
+                                                    @RequestParam("file") MultipartFile file,
+                                                    Principal principal) throws IOException {
+        imageModelService.uploadImageToPost(Long.parseLong(postId), file, principal);
 
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
     }
