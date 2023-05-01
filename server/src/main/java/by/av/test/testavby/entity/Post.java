@@ -22,7 +22,14 @@ public class Post {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany(mappedBy = "favoritePost")
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "favorite_post"
+            , joinColumns = @JoinColumn(name = "post_id")
+            , inverseJoinColumns = @JoinColumn(name = "user_id")
+            , foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
+            , inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
+    )
     private Set<User> favoriteUsers = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

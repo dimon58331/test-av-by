@@ -31,7 +31,8 @@ public class UserService {
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            throw new UserExistsException("User with this email" + user.getEmail() + "already exists!");
+            throw new UserExistsException("User with this email " + user.getEmail() + " or this number phone "
+                    + user.getPhoneNumber() + " already exists!");
         }
     }
 
@@ -46,6 +47,11 @@ public class UserService {
         currentUser.setPatronymic(user.getPatronymic());
 
         return userRepository.save(currentUser);
+    }
+
+    @Transactional
+    public void deleteCurrentUser(Principal principal){
+        userRepository.delete(convertPrincipalToUser(principal));
     }
 
     public User getCurrentUserByPrincipal(Principal principal){

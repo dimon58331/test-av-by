@@ -41,12 +41,13 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Post> posts;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "favorite_post"
-            , joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
-            , inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id")
-            , uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "post_id"})}
+            , joinColumns = @JoinColumn(name = "user_id")
+            , inverseJoinColumns = @JoinColumn(name = "post_id")
+            , foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
+            , inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
     )
     private Set<Post> favoritePost = new HashSet<>();
 

@@ -2,6 +2,7 @@ package by.av.test.testavby.controller;
 
 import by.av.test.testavby.dto.UserDTO;
 import by.av.test.testavby.entity.User;
+import by.av.test.testavby.payload.response.MessageResponse;
 import by.av.test.testavby.service.UserService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
@@ -44,6 +45,12 @@ public class UserController {
         User updatedUser = userService.updateByUserAndPrincipal(convertUserDTOToUser(userDTO), principal);
 
         return ResponseEntity.ok(convertUserToUserDTO(updatedUser));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deleteCurrentUser(Principal principal){
+        userService.deleteCurrentUser(principal);
+        return ResponseEntity.ok(new MessageResponse("User deleted successfully"));
     }
 
     private User convertUserDTOToUser(UserDTO userDTO){
