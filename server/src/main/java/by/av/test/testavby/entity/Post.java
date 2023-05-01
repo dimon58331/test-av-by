@@ -18,14 +18,14 @@ public class Post {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ElementCollection(targetClass = String.class)
     private Set<String> likedUsers = new HashSet<>();
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne()
     @JoinColumn(name = "transport_id", referencedColumnName = "id")
     private Transport transport;
 

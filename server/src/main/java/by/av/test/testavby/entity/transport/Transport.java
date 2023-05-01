@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "Transport")
+@Table(name = "Transport", uniqueConstraints = @UniqueConstraint(columnNames = {
+        "engine_capacity", "engine_power", "color", "release_year", "e_type_engine", "transport_model_id"}))
 @Data
 public class Transport {
     @Id
@@ -34,13 +35,14 @@ public class Transport {
     private Integer releaseYear;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "e_type_engine")
     private ETypeEngine eTypeEngine;
 
-    @OneToMany(mappedBy = "transport")
+    @OneToMany(mappedBy = "transport", cascade = CascadeType.ALL)
     private List<Post> post;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transport_model_id", referencedColumnName = "id")
+    @JoinColumn(name = "transport_model_id")
     private TransportModel transportModel;
 
     @Column(updatable = false, name = "created_date")

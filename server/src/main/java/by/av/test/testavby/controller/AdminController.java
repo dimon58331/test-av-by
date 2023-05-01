@@ -3,6 +3,7 @@ package by.av.test.testavby.controller;
 import by.av.test.testavby.dto.transport.TransportDTO;
 import by.av.test.testavby.entity.transport.Transport;
 import by.av.test.testavby.enums.ETypeEngine;
+import by.av.test.testavby.payload.response.MessageResponse;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
@@ -40,6 +41,12 @@ public class AdminController {
                 .createTransport(convertTransportDTOToTransport(transportDTO), eTypeEngine);
 
         return ResponseEntity.ok(convertTransportToTransportDTO(createdTransport));
+    }
+    @PostMapping("/transport/{transportId}/delete")
+    public ResponseEntity<MessageResponse> deleteTransportById(@PathVariable("transportId") String transportId){
+        transportService.deleteTransportById(Long.parseLong(transportId));
+
+        return ResponseEntity.ok(new MessageResponse("Transport deleted successfully"));
     }
 
     private TransportDTO convertTransportToTransportDTO(Transport transport) {

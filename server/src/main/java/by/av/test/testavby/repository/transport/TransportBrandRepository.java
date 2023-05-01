@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TransportBrandRepository extends JpaRepository<TransportBrand, Long> {
+public interface TransportBrandRepository extends JpaRepository<TransportBrand, Integer> {
     Optional<TransportBrand> findByBrandName(String brandName);
 }

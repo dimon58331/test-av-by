@@ -17,12 +17,12 @@ public class TransportModel {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transport_type_id", referencedColumnName = "id")
+    @ManyToOne()
+    @JoinColumn(name = "transport_type_id")
     private TransportType transportType;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transport_brand_id", referencedColumnName = "id")
+    @ManyToOne()
+    @JoinColumn(name = "transport_brand_id")
     private TransportBrand transportBrand;
 
     @OneToMany(mappedBy = "transportModel")

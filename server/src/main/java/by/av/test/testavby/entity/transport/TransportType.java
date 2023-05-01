@@ -18,6 +18,6 @@ public class TransportType {
     @Column(name = "type_name", unique = true)
     private String typeName;
 
-    @OneToMany(mappedBy = "transportType")
+    @OneToMany(mappedBy = "transportType", cascade = CascadeType.ALL)
     private Set<TransportModel> transportModels = new HashSet<>();
 }
