@@ -19,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -73,7 +75,10 @@ public class TransportService {
             Optional<TransportModel> transportModel = transportModelRepository.findByTransportBrandAndTransportType(
                     transportBrand.get(), transportType.get()
             );
-            transportModel.ifPresent(transport::setTransportModel);
+            transportModel.ifPresentOrElse(transport::setTransportModel, () -> {
+                transport.getTransportModel().setTransportBrand(transportBrand.get());
+                transport.getTransportModel().setTransportType(transportType.get());
+            });
         } else {
             transportType.ifPresent(type -> transport.getTransportModel().setTransportType(type));
             transportBrand.ifPresent(brand -> transport.getTransportModel().setTransportBrand(brand));
@@ -92,7 +97,7 @@ public class TransportService {
     }
 
     public Page<Transport> getAllTransportSortByBrand(int size, int page){
-        return transportRepository.findAll(PageRequest.of(page, size));
+        return transportRepository.findAllTransportSortedByAsc(PageRequest.of(page, size));
     }
 
     public Transport getTransportByPostId(Long postId){

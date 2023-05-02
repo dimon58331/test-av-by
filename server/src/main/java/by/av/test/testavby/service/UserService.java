@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -56,6 +57,10 @@ public class UserService {
 
     public User getCurrentUserByPrincipal(Principal principal){
         return convertPrincipalToUser(principal);
+    }
+
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 
     private User convertPrincipalToUser(Principal principal) {

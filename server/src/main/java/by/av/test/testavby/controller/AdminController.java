@@ -1,10 +1,13 @@
 package by.av.test.testavby.controller;
 
+import by.av.test.testavby.dto.UserDTO;
 import by.av.test.testavby.dto.transport.TransportDTO;
+import by.av.test.testavby.entity.User;
 import by.av.test.testavby.entity.transport.Transport;
 import by.av.test.testavby.enums.ETypeEngine;
 import by.av.test.testavby.payload.response.MessageResponse;
 import by.av.test.testavby.service.TransportService;
+import by.av.test.testavby.service.UserService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -20,13 +24,15 @@ import java.util.Objects;
 @RequestMapping("/api/admin")
 public class AdminController {
     private final TransportService transportService;
+    private final UserService userService;
     private final ModelMapper modelMapper;
     private final ResponseErrorValidation responseErrorValidation;
 
     @Autowired
-    public AdminController(TransportService transportService, ModelMapper modelMapper,
+    public AdminController(TransportService transportService, UserService userService, ModelMapper modelMapper,
                            ResponseErrorValidation responseErrorValidation) {
         this.transportService = transportService;
+        this.userService = userService;
         this.modelMapper = modelMapper;
         this.responseErrorValidation = responseErrorValidation;
     }
@@ -50,6 +56,11 @@ public class AdminController {
         return ResponseEntity.ok(new MessageResponse("Transport deleted successfully"));
     }
 
+    @GetMapping(value = "/users", params = {"page", "size"})
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        return ResponseEntity.ok(userService.findAll().stream().map(this::convertUserToUserDTO).toList());
+    }
+
     private TransportDTO convertTransportToTransportDTO(Transport transport) {
         return modelMapper.map(transport, TransportDTO.class);
     }
@@ -57,4 +68,13 @@ public class AdminController {
     private Transport convertTransportDTOToTransport(TransportDTO transportDTO){
         return modelMapper.map(transportDTO, Transport.class);
     }
+
+    private User convertUserDTOToUser(UserDTO userDTO){
+        return modelMapper.map(userDTO, User.class);
+    }
+
+    private UserDTO convertUserToUserDTO(User user){
+        return modelMapper.map(user, UserDTO.class);
+    }
+
 }
