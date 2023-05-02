@@ -12,11 +12,11 @@ import by.av.test.testavby.validator.ResponseErrorValidation;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -57,8 +57,8 @@ public class AdminController {
     }
 
     @GetMapping(value = "/users", params = {"page", "size"})
-    public ResponseEntity<List<UserDTO>> getAllUsers(){
-        return ResponseEntity.ok(userService.findAll().stream().map(this::convertUserToUserDTO).toList());
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam("page") int page, @RequestParam("size") int size){
+        return ResponseEntity.ok(userService.findAllSortedByNameAndSurname(page, size).map(this::convertUserToUserDTO));
     }
 
     private TransportDTO convertTransportToTransportDTO(Transport transport) {
