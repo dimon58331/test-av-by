@@ -31,11 +31,6 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    /*
-    * TODO
-    *  Check transport
-    * */
-
     @Transactional
     public Post createPost(Post post, Principal principal){
         post.setUser(convertPrincipalToUser(principal));

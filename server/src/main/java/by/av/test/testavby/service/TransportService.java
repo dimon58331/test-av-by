@@ -19,11 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -97,7 +95,7 @@ public class TransportService {
     }
 
     public Page<Transport> getAllTransportSortByBrand(int size, int page){
-        return transportRepository.findAllTransportSortedByAsc(PageRequest.of(page, size));
+        return transportRepository.findAllTransportSortedByBrandAsc(PageRequest.of(page, size));
     }
 
     public Transport getTransportByPostId(Long postId){
