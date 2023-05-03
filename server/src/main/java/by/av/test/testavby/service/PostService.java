@@ -65,6 +65,12 @@ public class PostService {
     }
 
     @Transactional
+    public Post updateByPostAndPostId(Post post, Long postId){
+        post.setId(postId);
+        return postRepository.save(post);
+    }
+
+    @Transactional
     public boolean likePost(Long postId, Principal principal){
         Post post = postRepository.findById(postId).orElseThrow(()->new PostNotFoundException("Post cannot be found"));
         User currentUser = convertPrincipalToUser(principal);

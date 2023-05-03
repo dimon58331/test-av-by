@@ -53,6 +53,12 @@ public class UserService {
     }
 
     @Transactional
+    public User updateByUserAndUserId(User user, Long userId){
+        user.setId(userId);
+        return userRepository.save(user);
+    }
+
+    @Transactional
     public User updateByUserAndPrincipal(User user, Principal principal){
         User currentUser = convertPrincipalToUser(principal);
 
@@ -68,6 +74,11 @@ public class UserService {
     @Transactional
     public void deleteCurrentUser(Principal principal){
         userRepository.delete(convertPrincipalToUser(principal));
+    }
+
+    @Transactional
+    public void deleteUserById(Long userId){
+        userRepository.deleteById(userId);
     }
 
     public User getCurrentUserByPrincipal(Principal principal){
