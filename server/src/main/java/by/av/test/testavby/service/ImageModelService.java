@@ -53,6 +53,36 @@ public class ImageModelService {
         imageModelRepository.save(imageModel);
     }
 
+    @Transactional
+    public void uploadImageToAnyPost(Long postId, MultipartFile file) throws IOException{
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+
+        Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
+        imageModelOptional.ifPresent(imageModelRepository::delete);
+
+        ImageModel imageModel = new ImageModel();
+        imageModel.setPost(post);
+        imageModel.setName(file.getOriginalFilename());
+        imageModel.setImageBytes(compressBytes(file.getBytes()));
+
+        imageModelRepository.save(imageModel);
+    }
+
+    @Transactional
+    public void deletePostImage(Long postId, Principal principal){
+        Post post = postRepository.findPostByIdAndUser(postId, convertPrincipalToUser(principal))
+                .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+        Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
+        imageModelOptional.ifPresent(imageModelRepository::delete);
+    }
+
+    @Transactional
+    public void deleteAnyPostImage(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+        Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
+        imageModelOptional.ifPresent(imageModelRepository::delete);
+    }
+
     public ImageModel getPostImage(Long postId){
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
         ImageModel imageModel = imageModelRepository.findImageModelByPost(post).orElseThrow(

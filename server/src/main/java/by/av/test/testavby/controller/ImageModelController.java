@@ -23,12 +23,19 @@ public class ImageModelController {
     }
 
     @PostMapping("/{postId}/upload")
-    public ResponseEntity<Object> uploadImageToPost(@PathVariable("postId") String postId,
+    public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
                                                     @RequestParam("file") MultipartFile file,
                                                     Principal principal) throws IOException {
         imageModelService.uploadImageToPost(Long.parseLong(postId), file, principal);
 
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
+    }
+
+    @PostMapping("/{postId}/delete")
+    public ResponseEntity<MessageResponse> deletePostImage(@PathVariable("postId") String postId, Principal principal) {
+        imageModelService.deletePostImage(Long.parseLong(postId), principal);
+
+        return ResponseEntity.ok(new MessageResponse("Post image deleted successfully"));
     }
 
     @GetMapping("/{postId}/image")
