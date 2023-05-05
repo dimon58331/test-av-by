@@ -74,19 +74,51 @@ public class TransportService {
                     transportBrand.get(), transportType.get()
             );
             transportModel.ifPresentOrElse(transport::setTransportModel, () -> {
-                transport.getTransportModel().setTransportBrand(transportBrand.get());
-                transport.getTransportModel().setTransportType(transportType.get());
+               throw new TransportNotFoundException("Transport model with this parameters not found!");
             });
         } else {
-            transportType.ifPresent(type -> transport.getTransportModel().setTransportType(type));
-            transportBrand.ifPresent(brand -> transport.getTransportModel().setTransportBrand(brand));
+            if (transportBrand.isEmpty() && transportType.isEmpty()){
+                throw new TransportNotFoundException("Transport with this brand and type doesnt exist");
+            }
+            else if (transportBrand.isEmpty()){
+                throw new TransportNotFoundException("Transport with this brand doesnt exist");
+            } else {
+                throw new TransportNotFoundException("Transport with this type doesnt exist");
+            }
         }
         try{
             return transportRepository.save(transport);
         } catch (Exception e){
-            throw new TransportExistsException("Transport with these parameters already exists");
+            throw new TransportExistsException("Transport with these parameters already exist");
         }
 
+    }
+
+    @Transactional
+    public TransportModel createTransportModel(TransportModel transportModel){
+        Optional<TransportType> transportType = transportTypeRepository.findByTypeName(transportModel.getTransportType()
+                .getTypeName());
+        Optional<TransportBrand> transportBrand = transportBrandRepository.findByBrandName(transportModel
+                .getTransportBrand().getBrandName());
+
+        if (transportBrand.isPresent() && transportType.isPresent()){
+            Optional<TransportModel> transportModelFromDB = transportModelRepository
+                    .findByTransportBrandAndTransportType(transportBrand.get(), transportType.get());
+            transportModelFromDB.ifPresentOrElse(transportModel1 -> {
+                throw new TransportExistsException("Transport model with this parameters already exists");
+            }, () -> {
+                transportModel.setTransportBrand(transportBrand.get());
+                transportModel.setTransportType(transportType.get());
+            });
+        } else {
+            transportType.ifPresentOrElse(transportModel::setTransportType, () -> {
+                transportModel.setTransportType(transportTypeRepository.save(transportModel.getTransportType()));
+            });
+            transportBrand.ifPresentOrElse(transportModel::setTransportBrand, () -> {
+                transportModel.setTransportBrand(transportBrandRepository.save(transportModel.getTransportBrand()));
+            });
+        }
+        return transportModelRepository.save(transportModel);
     }
 
     @Transactional
