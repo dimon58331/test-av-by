@@ -5,8 +5,7 @@ import by.av.test.testavby.entity.User;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
-import by.av.test.testavby.repository.UserRepository;
-import org.hibernate.Hibernate;
+import by.av.test.testavby.repository.CustomUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +21,13 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final CustomUserRepository customUserRepository;
     private final Logger LOG = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, CustomUserRepository customUserRepository) {
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.customUserRepository = customUserRepository;
     }
 
     @Transactional
@@ -56,7 +55,7 @@ public class PostService {
         Post updatedPost = postRepository.findPostByIdAndUser(post.getId(), convertPrincipalToUser(principal))
                 .orElseThrow(()->new PostNotFoundException("Post cannot be update"));
 
-        updatedPost.setTransport(post.getTransport());
+        updatedPost.setTransportParameters(post.getTransportParameters());
         updatedPost.setPrice(post.getPrice());
         updatedPost.setTitle(post.getTitle());
         updatedPost.setCaption(post.getCaption());
@@ -87,7 +86,7 @@ public class PostService {
     }
 
     private User convertPrincipalToUser(Principal principal) {
-        return userRepository.findUserByEmail(principal.getName())
+        return customUserRepository.findUserByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("User with email " + principal.getName() + " not found"));
     }
 }

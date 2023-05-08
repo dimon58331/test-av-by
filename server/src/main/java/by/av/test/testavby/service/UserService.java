@@ -3,16 +3,14 @@ package by.av.test.testavby.service;
 import by.av.test.testavby.entity.User;
 import by.av.test.testavby.exception.UserExistsException;
 import by.av.test.testavby.exception.UserNotFoundException;
-import by.av.test.testavby.repository.UserRepository;
+import by.av.test.testavby.repository.CustomUserRepository;
 import by.av.test.testavby.enums.ERole;
-import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +21,13 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 public class UserService {
-    private final UserRepository userRepository;
+    private final CustomUserRepository customUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public UserService(CustomUserRepository customUserRepository, PasswordEncoder passwordEncoder) {
+        this.customUserRepository = customUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -38,8 +36,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(ERole.ROLE_USER);
 
-        Optional<User> userFoundByEmail = userRepository.findUserByEmail(user.getEmail());
-        Optional<User> userFoundByPhoneNumber = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
+        Optional<User> userFoundByEmail = customUserRepository.findUserByEmail(user.getEmail());
+        Optional<User> userFoundByPhoneNumber = customUserRepository.findUserByPhoneNumber(user.getPhoneNumber());
 
         if (userFoundByPhoneNumber.isPresent() && userFoundByEmail.isPresent()){
             throw new UserExistsException("User with this phone number '" + user.getPhoneNumber()
@@ -49,13 +47,13 @@ public class UserService {
         } else if (userFoundByPhoneNumber.isPresent()){
             throw new UserExistsException("User with this phone number '" + user.getPhoneNumber() + "' already exists!");
         }
-        userRepository.save(user);
+        customUserRepository.save(user);
     }
 
     @Transactional
     public User updateByUserAndUserId(User user, Long userId){
         user.setId(userId);
-        return userRepository.save(user);
+        return customUserRepository.save(user);
     }
 
     @Transactional
@@ -68,17 +66,17 @@ public class UserService {
         currentUser.setLastname(user.getLastname());
         currentUser.setPatronymic(user.getPatronymic());
 
-        return userRepository.save(currentUser);
+        return customUserRepository.save(currentUser);
     }
 
     @Transactional
     public void deleteCurrentUser(Principal principal){
-        userRepository.delete(convertPrincipalToUser(principal));
+        customUserRepository.delete(convertPrincipalToUser(principal));
     }
 
     @Transactional
     public void deleteUserById(Long userId){
-        userRepository.deleteById(userId);
+        customUserRepository.deleteById(userId);
     }
 
     public User getCurrentUserByPrincipal(Principal principal){
@@ -86,11 +84,11 @@ public class UserService {
     }
 
     public Page<User> findAllSortedByNameAndSurname(int page, int size){
-        return userRepository.findAll(PageRequest.of(page, size, Sort.by("firstname", "lastname")));
+        return customUserRepository.findAll(PageRequest.of(page, size, Sort.by("firstname", "lastname")));
     }
 
     private User convertPrincipalToUser(Principal principal) {
-        return userRepository.findUserByEmail(principal.getName())
+        return customUserRepository.findUserByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("User with email " + principal.getName() + " not found"));
     }
 

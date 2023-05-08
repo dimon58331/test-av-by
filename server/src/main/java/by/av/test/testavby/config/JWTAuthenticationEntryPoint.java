@@ -2,7 +2,6 @@ package by.av.test.testavby.config;
 
 import by.av.test.testavby.payload.response.InvalidLoginResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

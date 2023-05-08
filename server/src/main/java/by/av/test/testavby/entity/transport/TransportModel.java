@@ -6,10 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(
-    name = "transport_model",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"transport_type_id", "transport_brand_id"})
-)
+@Table(name = "transport_model")
 @Data
 public class TransportModel {
     @Id
@@ -17,14 +14,14 @@ public class TransportModel {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne()
-    @JoinColumn(name = "transport_type_id")
-    private TransportType transportType;
+    @Column(name = "model_name")
+    private String modelName;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "transport_brand_id")
     private TransportBrand transportBrand;
 
-    @OneToMany(mappedBy = "transportModel")
-    private List<Transport> transport;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "transportModel")
+    private List<GenerationTransport> generationTransports;
+
 }

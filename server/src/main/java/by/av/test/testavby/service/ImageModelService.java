@@ -8,7 +8,7 @@ import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.ImageModelRepository;
 import by.av.test.testavby.repository.PostRepository;
-import by.av.test.testavby.repository.UserRepository;
+import by.av.test.testavby.repository.CustomUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +27,14 @@ import java.util.zip.Inflater;
 public class ImageModelService {
     private final ImageModelRepository imageModelRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final CustomUserRepository customUserRepository;
 
     @Autowired
     public ImageModelService(ImageModelRepository imageModelRepository, PostRepository postRepository,
-                             UserRepository userRepository) {
+                             CustomUserRepository customUserRepository) {
         this.imageModelRepository = imageModelRepository;
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.customUserRepository = customUserRepository;
     }
 
     @Transactional
@@ -93,7 +93,7 @@ public class ImageModelService {
     }
 
     private User convertPrincipalToUser(Principal principal) {
-        return userRepository.findUserByEmail(principal.getName())
+        return customUserRepository.findUserByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("User with email " + principal.getName() + " not found"));
     }
 

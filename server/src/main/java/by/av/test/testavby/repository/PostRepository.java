@@ -5,15 +5,14 @@ import by.av.test.testavby.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
-@Service
+@Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    public Page<Post> findPostsByUserOrderByCreatedDateDesc(User user, Pageable pageable);
-    public Page<Post> findAllByOrderByCreatedDateDesc(Pageable pageable);
-    public Optional<Post> findPostByIdAndUser(Long postId, User user);
-    public void deletePostByIdAndUser(Long postId, User user);
+    Page<Post> findPostsByUserOrderByCreatedDateDesc(User user, Pageable pageable);
+    Page<Post> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    Optional<Post> findPostByIdAndUser(Long postId, User user);
+    void deletePostByIdAndUser(Long postId, User user);
 }
