@@ -32,7 +32,7 @@ public class UserController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal){
         return ResponseEntity.ok(convertUserToUserDTO(userService.getCurrentUserByPrincipal(principal)));
     }
