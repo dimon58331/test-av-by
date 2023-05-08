@@ -54,7 +54,7 @@ public class AuthorizationController {
 
         String token = jwtUtil.generateToken(authenticationRequest.getEmail());
 
-        return ResponseEntity.ok(new JWTSuccessResponse(true, token));
+        return ResponseEntity.ok(new JWTSuccessResponse(token));
     }
 
     @PostMapping("/signup")

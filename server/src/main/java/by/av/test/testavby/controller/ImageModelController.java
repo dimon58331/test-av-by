@@ -38,7 +38,7 @@ public class ImageModelController {
         return ResponseEntity.ok(new MessageResponse("Post image deleted successfully"));
     }
 
-    @GetMapping("/{postId}/image")
+    @GetMapping("/{postId}")
     public ResponseEntity<ImageModel> getPostImage(@PathVariable("postId") String postId){
         ImageModel imageModel = imageModelService.getPostImage(Long.parseLong(postId));
 
