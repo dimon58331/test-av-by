@@ -1,6 +1,8 @@
 package by.av.test.testavby.controller;
 
+import by.av.test.testavby.dto.transport.TransportBrandDTO;
 import by.av.test.testavby.dto.transport.TransportParametersDTO;
+import by.av.test.testavby.entity.transport.TransportBrand;
 import by.av.test.testavby.entity.transport.TransportParameters;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
@@ -30,9 +32,9 @@ public class TransportController {
     }
 
     @GetMapping(value = "/all", params = {"size", "page"})
-    public Page<TransportParametersDTO> getAllTransport(@RequestParam("size") int size, @RequestParam("page") int page){
-        return transportService.getAllTransportSortByBrand(size, page)
-                .map(this::convertTransportParametersToTransportParametersDTO);
+    public Page<TransportBrandDTO> getAllTransportBrand(@RequestParam("size") int size, @RequestParam("page") int page){
+        return transportService.getAllTransportBrandSortByAsc(size, page)
+                .map(this::convertTransportBrandToTransportBrandDTO);
     }
 
     @PostMapping("/{postId}/{transportId}/create")
@@ -56,5 +58,9 @@ public class TransportController {
 
     private TransportParametersDTO convertTransportParametersToTransportParametersDTO(TransportParameters transportParameters){
         return modelMapper.map(transportParameters, TransportParametersDTO.class);
+    }
+
+    private TransportBrandDTO convertTransportBrandToTransportBrandDTO(TransportBrand transportBrand) {
+        return modelMapper.map(transportBrand, TransportBrandDTO.class);
     }
 }

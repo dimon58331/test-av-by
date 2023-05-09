@@ -1,6 +1,7 @@
 package by.av.test.testavby.service;
 
 import by.av.test.testavby.entity.Post;
+import by.av.test.testavby.entity.transport.TransportBrand;
 import by.av.test.testavby.entity.transport.TransportParameters;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.TransportExistsException;
@@ -12,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,8 +81,8 @@ public class TransportService {
         transportParametersRepository.deleteById(transportId);
     }
 
-    public Page<TransportParameters> getAllTransportSortByBrand(int size, int page){
-        return null;//transportRepository.findAllTransportSortedByBrandAsc(PageRequest.of(page, size));
+    public Page<TransportBrand> getAllTransportBrandSortByAsc(int size, int page){
+        return transportBrandRepository.findAll(PageRequest.of(page, size, Sort.by("brandName")));
     }
 
     public TransportParameters getTransportParametersByPostId(Long postId){
