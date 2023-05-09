@@ -3,8 +3,7 @@ package by.av.test.testavby.entity.transport;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "transport_brand")
@@ -14,10 +13,8 @@ public class TransportBrand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-
-    @Column(name = "brand_name", unique = true)
+    @Column(name = "brand_name")
     private String brandName;
-
     @OneToMany(mappedBy = "transportBrand", cascade = CascadeType.ALL)
-    private Set<TransportModel> transportModels = new HashSet<>();
+    private List<TransportModel> transportModels;
 }

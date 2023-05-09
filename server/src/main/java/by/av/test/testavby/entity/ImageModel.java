@@ -19,12 +19,12 @@ public class ImageModel {
     private byte[] imageBytes;
 
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 }

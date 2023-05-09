@@ -1,21 +1,16 @@
 package by.av.test.testavby.controller;
 
-import by.av.test.testavby.dto.transport.TransportDTO;
-import by.av.test.testavby.entity.transport.Transport;
-import by.av.test.testavby.enums.ETypeEngine;
+import by.av.test.testavby.dto.transport.TransportParametersDTO;
+import by.av.test.testavby.entity.transport.TransportParameters;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -35,45 +30,31 @@ public class TransportController {
     }
 
     @GetMapping(value = "/all", params = {"size", "page"})
-    public Page<TransportDTO> getAllTransport(@RequestParam("size") int size, @RequestParam("page") int page){
-        return transportService.getAllTransportSortByBrand(size, page).map(this::convertTransportToTransportDTO);
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<Object> createTransport(@Valid @RequestBody TransportDTO transportDTO,
-                                                  @RequestParam("engineType") ETypeEngine eTypeEngine,
-                                                  BindingResult result){
-        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
-        if (Objects.nonNull(errors)) return errors;
-
-        LOG.info(transportDTO.toString());
-
-        Transport createdTransport = transportService
-                .createTransport(convertTransportDTOToTransport(transportDTO), eTypeEngine);
-
-        return ResponseEntity.ok(convertTransportToTransportDTO(createdTransport));
+    public Page<TransportParametersDTO> getAllTransport(@RequestParam("size") int size, @RequestParam("page") int page){
+        return transportService.getAllTransportSortByBrand(size, page)
+                .map(this::convertTransportParametersToTransportParametersDTO);
     }
 
     @PostMapping("/{postId}/{transportId}/create")
     public ResponseEntity<Object> addTransportToPost(@PathVariable("transportId") String transportId,
                                                      @PathVariable("postId") String postId) {
-        Transport createdTransport = transportService
+        TransportParameters createdTransportParameters = transportService
                 .addTransportForPost(Long.parseLong(postId), Long.parseLong(transportId));
 
-        return ResponseEntity.ok(convertTransportToTransportDTO(createdTransport));
+        return ResponseEntity.ok(convertTransportParametersToTransportParametersDTO(createdTransportParameters));
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<TransportDTO> getTransport(@PathVariable("postId") String postId){
-        Transport transport = transportService.getTransportByPostId(Long.parseLong(postId));
-        return ResponseEntity.ok(convertTransportToTransportDTO(transport));
+    public ResponseEntity<TransportParametersDTO> getTransport(@PathVariable("postId") String postId){
+        TransportParameters transportParameters = transportService.getTransportParametersByPostId(Long.parseLong(postId));
+        return ResponseEntity.ok(convertTransportParametersToTransportParametersDTO(transportParameters));
     }
 
-    private Transport convertTransportDTOToTransport(TransportDTO transportDTO) {
-        return modelMapper.map(transportDTO, Transport.class);
+    private TransportParameters convertTransportParametersDTOToTransportParameters(TransportParametersDTO transportParametersDTO) {
+        return modelMapper.map(transportParametersDTO, TransportParameters.class);
     }
 
-    private TransportDTO convertTransportToTransportDTO(Transport transport){
-        return modelMapper.map(transport, TransportDTO.class);
+    private TransportParametersDTO convertTransportParametersToTransportParametersDTO(TransportParameters transportParameters){
+        return modelMapper.map(transportParameters, TransportParametersDTO.class);
     }
 }
