@@ -1,8 +1,10 @@
 package by.av.test.testavby.controller;
 
 import by.av.test.testavby.dto.transport.TransportBrandDTO;
+import by.av.test.testavby.dto.transport.TransportModelDTO;
 import by.av.test.testavby.dto.transport.TransportParametersDTO;
 import by.av.test.testavby.entity.transport.TransportBrand;
+import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
 import by.av.test.testavby.service.TransportService;
 import by.av.test.testavby.validator.ResponseErrorValidation;
@@ -31,10 +33,17 @@ public class TransportController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @GetMapping(value = "/all", params = {"size", "page"})
+    @GetMapping(value = "/all/brand", params = {"size", "page"})
     public Page<TransportBrandDTO> getAllTransportBrand(@RequestParam("size") int size, @RequestParam("page") int page){
         return transportService.getAllTransportBrandSortByAsc(size, page)
                 .map(this::convertTransportBrandToTransportBrandDTO);
+    }
+
+    @GetMapping(value = "/all/model", params = {"size", "page", "transportBrandId"})
+    public Page<TransportModelDTO> getAllTransportModel(@RequestParam("size") int size, @RequestParam("page") int page,
+                                                        @RequestParam("transportBrandId") int transportBrandId){
+        return transportService.getAllTransportModelSortByAscAndTransportBrandId(size, page, transportBrandId)
+                .map(this::convertTransportModelToTransportModelDTO);
     }
 
     @PostMapping("/{postId}/{transportId}/create")
@@ -62,5 +71,9 @@ public class TransportController {
 
     private TransportBrandDTO convertTransportBrandToTransportBrandDTO(TransportBrand transportBrand) {
         return modelMapper.map(transportBrand, TransportBrandDTO.class);
+    }
+
+    private TransportModelDTO convertTransportModelToTransportModelDTO(TransportModel transportModel) {
+        return modelMapper.map(transportModel, TransportModelDTO.class);
     }
 }

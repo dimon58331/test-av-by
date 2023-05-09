@@ -2,12 +2,14 @@ package by.av.test.testavby.service;
 
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.transport.TransportBrand;
+import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.TransportExistsException;
 import by.av.test.testavby.exception.TransportNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
 import by.av.test.testavby.repository.transport.TransportBrandRepository;
+import by.av.test.testavby.repository.transport.TransportModelRepository;
 import by.av.test.testavby.repository.transport.TransportParametersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +27,17 @@ import java.util.Objects;
 public class TransportService {
     private final TransportParametersRepository transportParametersRepository;
     private final TransportBrandRepository transportBrandRepository;
+    private final TransportModelRepository transportModelRepository;
     private final PostRepository postRepository;
     private final Logger LOG = LoggerFactory.getLogger(TransportService.class);
 
     @Autowired
     public TransportService(TransportParametersRepository transportParametersRepository,
                             TransportBrandRepository transportBrandRepository,
-                            PostRepository postRepository) {
+                            TransportModelRepository transportModelRepository, PostRepository postRepository) {
         this.transportParametersRepository = transportParametersRepository;
         this.transportBrandRepository = transportBrandRepository;
+        this.transportModelRepository = transportModelRepository;
         this.postRepository = postRepository;
     }
 
@@ -83,6 +87,13 @@ public class TransportService {
 
     public Page<TransportBrand> getAllTransportBrandSortByAsc(int size, int page){
         return transportBrandRepository.findAll(PageRequest.of(page, size, Sort.by("brandName")));
+    }
+
+    public Page<TransportModel> getAllTransportModelSortByAscAndTransportBrandId(int size, int page,
+                                                                                 int transportBrandId){
+        return transportModelRepository.findAllByTransportBrand(transportBrandRepository.findById(transportBrandId)
+                        .orElseThrow(()->new TransportNotFoundException("Transport brand with this id not found")),
+                PageRequest.of(page, size, Sort.by("modelName")));
     }
 
     public TransportParameters getTransportParametersByPostId(Long postId){
