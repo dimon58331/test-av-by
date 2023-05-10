@@ -1,8 +1,10 @@
 package by.av.test.testavby.controller;
 
+import by.av.test.testavby.dto.transport.GenerationTransportDTO;
 import by.av.test.testavby.dto.transport.TransportBrandDTO;
 import by.av.test.testavby.dto.transport.TransportModelDTO;
 import by.av.test.testavby.dto.transport.TransportParametersDTO;
+import by.av.test.testavby.entity.transport.GenerationTransport;
 import by.av.test.testavby.entity.transport.TransportBrand;
 import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
@@ -46,6 +48,15 @@ public class TransportController {
                 .map(this::convertTransportModelToTransportModelDTO);
     }
 
+    @GetMapping(value = "/all/generation", params = {"size", "page", "releaseYear", "transportModelId"})
+    public Page<GenerationTransportDTO> getAllGenerationTransport(@RequestParam("size") int size,
+                                                                  @RequestParam("page") int page,
+                                                                  @RequestParam("releaseYear") int releaseYear,
+                                                                  @RequestParam("transportModelId") Long transportModelId){
+        return transportService.getAllGenerationTransportByReleaseYearAndTransportModelIdSortedByAsc(size, page,
+                        releaseYear, transportModelId).map(this::convertGenerationTransportToGenerationTransportDTO);
+    }
+
     @PostMapping("/{postId}/{transportId}/create")
     public ResponseEntity<Object> addTransportToPost(@PathVariable("transportId") String transportId,
                                                      @PathVariable("postId") String postId) {
@@ -75,5 +86,9 @@ public class TransportController {
 
     private TransportModelDTO convertTransportModelToTransportModelDTO(TransportModel transportModel) {
         return modelMapper.map(transportModel, TransportModelDTO.class);
+    }
+
+    private GenerationTransportDTO convertGenerationTransportToGenerationTransportDTO(GenerationTransport generation) {
+        return modelMapper.map(generation, GenerationTransportDTO.class);
     }
 }

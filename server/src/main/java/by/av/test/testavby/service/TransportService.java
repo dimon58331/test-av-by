@@ -1,6 +1,7 @@
 package by.av.test.testavby.service;
 
 import by.av.test.testavby.entity.Post;
+import by.av.test.testavby.entity.transport.GenerationTransport;
 import by.av.test.testavby.entity.transport.TransportBrand;
 import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
@@ -8,6 +9,7 @@ import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.TransportExistsException;
 import by.av.test.testavby.exception.TransportNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
+import by.av.test.testavby.repository.transport.GenerationTransportRepository;
 import by.av.test.testavby.repository.transport.TransportBrandRepository;
 import by.av.test.testavby.repository.transport.TransportModelRepository;
 import by.av.test.testavby.repository.transport.TransportParametersRepository;
@@ -28,16 +30,18 @@ public class TransportService {
     private final TransportParametersRepository transportParametersRepository;
     private final TransportBrandRepository transportBrandRepository;
     private final TransportModelRepository transportModelRepository;
+    private final GenerationTransportRepository generationTransportRepository;
     private final PostRepository postRepository;
     private final Logger LOG = LoggerFactory.getLogger(TransportService.class);
 
     @Autowired
     public TransportService(TransportParametersRepository transportParametersRepository,
                             TransportBrandRepository transportBrandRepository,
-                            TransportModelRepository transportModelRepository, PostRepository postRepository) {
+                            TransportModelRepository transportModelRepository, GenerationTransportRepository generationTransportRepository, PostRepository postRepository) {
         this.transportParametersRepository = transportParametersRepository;
         this.transportBrandRepository = transportBrandRepository;
         this.transportModelRepository = transportModelRepository;
+        this.generationTransportRepository = generationTransportRepository;
         this.postRepository = postRepository;
     }
 
@@ -94,6 +98,20 @@ public class TransportService {
         return transportModelRepository.findAllByTransportBrand(transportBrandRepository.findById(transportBrandId)
                         .orElseThrow(()->new TransportNotFoundException("Transport brand with this id not found")),
                 PageRequest.of(page, size, Sort.by("modelName")));
+    }
+
+    public Page<GenerationTransport> getAllGenerationTransportByReleaseYearAndTransportModelIdSortedByAsc(int size
+            , int page, int releaseYear, Long transportModelId) {
+        Page<GenerationTransport> generationTransports = generationTransportRepository
+                .findAllByTransportModelAndEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
+                        transportModelRepository.findById(transportModelId).orElseThrow(
+                                () -> new TransportNotFoundException("Transport model with this id not found")
+                        ), releaseYear, releaseYear, PageRequest.of(page, size, Sort.by("generationName"))
+                );
+        if (generationTransports.getContent().isEmpty()){
+            throw new TransportNotFoundException("Transport with these parameters not found");
+        }
+        return generationTransports;
     }
 
     public TransportParameters getTransportParametersByPostId(Long postId){
