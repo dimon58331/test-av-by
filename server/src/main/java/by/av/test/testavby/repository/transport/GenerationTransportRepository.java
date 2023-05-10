@@ -12,7 +12,13 @@ import java.util.List;
 @Repository
 public interface GenerationTransportRepository extends JpaRepository<GenerationTransport, Long> {
     List<GenerationTransport> findAllByTransportModelOrderByStartReleaseYear(TransportModel transportModel);
+
+    List<GenerationTransport> findAllByOrderByStartReleaseYear();
+
+    List<GenerationTransport> findAllByOrderByEndReleaseYearDesc();
+
     List<GenerationTransport> findAllByTransportModelOrderByEndReleaseYearDesc(TransportModel transportModel);
+
     Page<GenerationTransport> findAllByTransportModelAndEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
             TransportModel transportModel, Integer endReleaseYear, Integer startReleaseYear, Pageable pageable);
 }

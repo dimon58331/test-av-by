@@ -4,13 +4,9 @@ import by.av.test.testavby.dto.transport.GenerationTransportDTO;
 import by.av.test.testavby.dto.transport.TransportBrandDTO;
 import by.av.test.testavby.dto.transport.TransportModelDTO;
 import by.av.test.testavby.dto.transport.TransportParametersDTO;
-import by.av.test.testavby.entity.transport.GenerationTransport;
-import by.av.test.testavby.entity.transport.TransportBrand;
-import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
+import by.av.test.testavby.mapper.transport.TransportMapper;
 import by.av.test.testavby.service.TransportService;
-import by.av.test.testavby.validator.ResponseErrorValidation;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,87 +21,71 @@ import java.util.Map;
 @CrossOrigin
 @RequestMapping("/api/transport")
 public class TransportController {
-    private final ModelMapper modelMapper;
+    private final TransportMapper transportMapper;
     private final TransportService transportService;
-    private final ResponseErrorValidation responseErrorValidation;
     private final Logger LOG = LoggerFactory.getLogger(TransportController.class);
 
     @Autowired
-    public TransportController(ModelMapper modelMapper, TransportService transportService,
-                               ResponseErrorValidation responseErrorValidation) {
-        this.modelMapper = modelMapper;
+    public TransportController(TransportMapper transportMapper, TransportService transportService) {
+        this.transportMapper = transportMapper;
         this.transportService = transportService;
-        this.responseErrorValidation = responseErrorValidation;
     }
 
     @GetMapping(value = "/all/brand", params = {"size", "page"})
-    public Page<TransportBrandDTO> getAllTransportBrand(@RequestParam("size") int size, @RequestParam("page") int page){
+    public Page<TransportBrandDTO> getAllTransportBrand(@RequestParam("size") int size, @RequestParam("page") int page) {
         return transportService.getAllTransportBrandSortByAsc(size, page)
-                .map(this::convertTransportBrandToTransportBrandDTO);
+                .map(transportMapper::convertTransportBrandToTransportBrandDTO);
     }
 
     @GetMapping(value = "/all/model", params = {"size", "page", "transportBrandId"})
     public Page<TransportModelDTO> getAllTransportModel(@RequestParam("size") int size, @RequestParam("page") int page,
-                                                        @RequestParam("transportBrandId") int transportBrandId){
+                                                        @RequestParam("transportBrandId") int transportBrandId) {
         return transportService.getAllTransportModelSortByAscAndTransportBrandId(size, page, transportBrandId)
-                .map(this::convertTransportModelToTransportModelDTO);
+                .map(transportMapper::convertTransportModelToTransportModelDTO);
     }
 
     @GetMapping(value = "/all/generation", params = {"size", "page", "releaseYear", "transportModelId"})
     public Page<GenerationTransportDTO> getAllGenerationTransport(@RequestParam("size") int size,
                                                                   @RequestParam("page") int page,
                                                                   @RequestParam("releaseYear") int releaseYear,
-                                                                  @RequestParam("transportModelId") Long transportModelId){
+                                                                  @RequestParam("transportModelId") Long transportModelId) {
         return transportService.getAllGenerationTransportByReleaseYearAndTransportModelIdSortedByAsc(size, page,
-                        releaseYear, transportModelId).map(this::convertGenerationTransportToGenerationTransportDTO);
+                releaseYear, transportModelId).map(transportMapper::convertGenerationTransportToGenerationTransportDTO);
     }
 
     @GetMapping(value = "/all/generation/releaseYears", params = {"transportModelId"})
-    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears(@RequestParam("transportModelId") Long transportModelId){
+    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYearsByTransportModel(
+            @RequestParam("transportModelId") Long transportModelId) {
         return transportService.getMaxAndMinGenerationTransportReleaseYearsByTransportModel(transportModelId);
+    }
+
+    @GetMapping(value = "/all/releaseYears")
+    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
+        return transportService.getMaxAndMinGenerationTransportReleaseYears();
     }
 
     @GetMapping(value = "/all/transportParameters", params = {"generationTransportId"})
     public ResponseEntity<List<TransportParametersDTO>> getAllTransportParametersByGenerationTransport(
-            @RequestParam("generationTransportId") Long generationTransportId){
+            @RequestParam("generationTransportId") Long generationTransportId) {
         List<TransportParametersDTO> transportParametersDTOS = transportService
                 .getAllTransportParametersByGenerationTransport(generationTransportId).stream()
-                .map(this::convertTransportParametersToTransportParametersDTO).toList();
+                .map(transportMapper::convertTransportParametersToTransportParametersDTO).toList();
         return ResponseEntity.ok(transportParametersDTOS);
     }
 
-    @PostMapping("/{postId}/{transportId}/create")
-    public ResponseEntity<Object> addTransportToPost(@PathVariable("transportId") String transportId,
-                                                     @PathVariable("postId") String postId) {
+    @PostMapping("/{postId}/{transportId}/add")
+    public ResponseEntity<Object> addTransportParametersToPost(@PathVariable("transportId") String transportId,
+                                                               @PathVariable("postId") String postId) {
         TransportParameters createdTransportParameters = transportService
-                .addTransportForPost(Long.parseLong(postId), Long.parseLong(transportId));
+                .addTransportToPost(Long.parseLong(postId), Long.parseLong(transportId));
 
-        return ResponseEntity.ok(convertTransportParametersToTransportParametersDTO(createdTransportParameters));
+        return ResponseEntity.ok(transportMapper
+                .convertTransportParametersToTransportParametersDTO(createdTransportParameters));
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<TransportParametersDTO> getTransport(@PathVariable("postId") String postId){
+    public ResponseEntity<TransportParametersDTO> getTransport(@PathVariable("postId") String postId) {
         TransportParameters transportParameters = transportService.getTransportParametersByPostId(Long.parseLong(postId));
-        return ResponseEntity.ok(convertTransportParametersToTransportParametersDTO(transportParameters));
-    }
-
-    private TransportParameters convertTransportParametersDTOToTransportParameters(TransportParametersDTO parameters) {
-        return modelMapper.map(parameters, TransportParameters.class);
-    }
-
-    private TransportParametersDTO convertTransportParametersToTransportParametersDTO(TransportParameters parameters){
-        return modelMapper.map(parameters, TransportParametersDTO.class);
-    }
-
-    private TransportBrandDTO convertTransportBrandToTransportBrandDTO(TransportBrand transportBrand) {
-        return modelMapper.map(transportBrand, TransportBrandDTO.class);
-    }
-
-    private TransportModelDTO convertTransportModelToTransportModelDTO(TransportModel transportModel) {
-        return modelMapper.map(transportModel, TransportModelDTO.class);
-    }
-
-    private GenerationTransportDTO convertGenerationTransportToGenerationTransportDTO(GenerationTransport generation) {
-        return modelMapper.map(generation, GenerationTransportDTO.class);
+        return ResponseEntity.ok(transportMapper.convertTransportParametersToTransportParametersDTO(transportParameters));
     }
 }

@@ -39,25 +39,25 @@ public class UserService {
         Optional<User> userFoundByEmail = customUserRepository.findUserByEmail(user.getEmail());
         Optional<User> userFoundByPhoneNumber = customUserRepository.findUserByPhoneNumber(user.getPhoneNumber());
 
-        if (userFoundByPhoneNumber.isPresent() && userFoundByEmail.isPresent()){
+        if (userFoundByPhoneNumber.isPresent() && userFoundByEmail.isPresent()) {
             throw new UserExistsException("User with this phone number '" + user.getPhoneNumber()
                     + "' and this email '" + user.getEmail() + "' already exists!");
         } else if (userFoundByEmail.isPresent()) {
             throw new UserExistsException("User with this email '" + user.getEmail() + "' already exists!");
-        } else if (userFoundByPhoneNumber.isPresent()){
+        } else if (userFoundByPhoneNumber.isPresent()) {
             throw new UserExistsException("User with this phone number '" + user.getPhoneNumber() + "' already exists!");
         }
         customUserRepository.save(user);
     }
 
     @Transactional
-    public User updateByUserAndUserId(User user, Long userId){
+    public User updateByUserAndUserId(User user, Long userId) {
         user.setId(userId);
         return customUserRepository.save(user);
     }
 
     @Transactional
-    public User updateByUserAndPrincipal(User user, Principal principal){
+    public User updateByUserAndPrincipal(User user, Principal principal) {
         User currentUser = convertPrincipalToUser(principal);
 
         currentUser.setEmail(user.getEmail());
@@ -70,20 +70,20 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteCurrentUser(Principal principal){
+    public void deleteCurrentUser(Principal principal) {
         customUserRepository.delete(convertPrincipalToUser(principal));
     }
 
     @Transactional
-    public void deleteUserById(Long userId){
+    public void deleteUserById(Long userId) {
         customUserRepository.deleteById(userId);
     }
 
-    public User getCurrentUserByPrincipal(Principal principal){
+    public User getCurrentUserByPrincipal(Principal principal) {
         return convertPrincipalToUser(principal);
     }
 
-    public Page<User> findAllSortedByNameAndSurname(int page, int size){
+    public Page<User> findAllSortedByNameAndSurname(int page, int size) {
         return customUserRepository.findAll(PageRequest.of(page, size, Sort.by("firstname", "lastname")));
     }
 

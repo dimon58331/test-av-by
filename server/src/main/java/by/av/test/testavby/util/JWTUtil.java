@@ -15,7 +15,7 @@ public class JWTUtil {
     @Value("${jwt_secret_key}")
     private String secretKey;
 
-    public String generateToken(String email){
+    public String generateToken(String email) {
         Date expireDate = Date.from(ZonedDateTime.now().plusMinutes(60).toInstant());
 
         return JWT.create().withSubject("User details")
@@ -26,7 +26,7 @@ public class JWTUtil {
                 .sign(Algorithm.HMAC256(secretKey));
     }
 
-    public String validateTokenAndRetrieveClaim(String token){
+    public String validateTokenAndRetrieveClaim(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey))
                 .withSubject("User details")
                 .withIssuer("Spring-security")

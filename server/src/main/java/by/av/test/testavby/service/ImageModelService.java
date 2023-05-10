@@ -54,7 +54,7 @@ public class ImageModelService {
     }
 
     @Transactional
-    public void uploadImageToAnyPost(Long postId, MultipartFile file) throws IOException{
+    public void uploadImageToAnyPost(Long postId, MultipartFile file) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
 
         Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
@@ -69,7 +69,7 @@ public class ImageModelService {
     }
 
     @Transactional
-    public void deletePostImage(Long postId, Principal principal){
+    public void deletePostImage(Long postId, Principal principal) {
         Post post = postRepository.findPostByIdAndUser(postId, convertPrincipalToUser(principal))
                 .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
         Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
@@ -77,13 +77,13 @@ public class ImageModelService {
     }
 
     @Transactional
-    public void deleteAnyPostImage(Long postId){
+    public void deleteAnyPostImage(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
         Optional<ImageModel> imageModelOptional = imageModelRepository.findImageModelByPost(post);
         imageModelOptional.ifPresent(imageModelRepository::delete);
     }
 
-    public ImageModel getPostImage(Long postId){
+    public ImageModel getPostImage(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
         ImageModel imageModel = imageModelRepository.findImageModelByPost(post).orElseThrow(
                 () -> new ImageModelNotFoundException("Image cannot be found")
@@ -97,35 +97,35 @@ public class ImageModelService {
                 .orElseThrow(() -> new UserNotFoundException("User with email " + principal.getName() + " not found"));
     }
 
-    private byte[] compressBytes(byte[] data){
+    private byte[] compressBytes(byte[] data) {
         Deflater deflater = new Deflater();
         deflater.setInput(data);
         deflater.finish();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
         byte[] buffer = new byte[1024];
-        while (!deflater.finished()){
+        while (!deflater.finished()) {
             int count = deflater.deflate(buffer);
             outputStream.write(buffer, 0, count);
         }
         try {
             outputStream.close();
-        }catch (IOException ignored){
+        } catch (IOException ignored) {
         }
         return outputStream.toByteArray();
     }
 
-    private static byte[] decompressBytes(byte[] data){
+    private static byte[] decompressBytes(byte[] data) {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
         byte[] buffer = new byte[1024];
         try {
-            while(!inflater.finished()){
+            while (!inflater.finished()) {
                 int count = inflater.inflate(buffer);
                 outputStream.write(buffer, 0, count);
             }
             outputStream.close();
-        }catch (IOException | DataFormatException ignored){
+        } catch (IOException | DataFormatException ignored) {
         }
         return outputStream.toByteArray();
     }

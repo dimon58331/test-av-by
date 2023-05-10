@@ -15,5 +15,6 @@ import java.util.Optional;
 @Repository
 public interface TransportParametersRepository extends JpaRepository<TransportParameters, Long> {
     Optional<TransportParameters> findTransportParametersByPost(Post post);
+
     List<TransportParameters> findAllByGenerationTransportOrderByEnginePower(GenerationTransport generationTransport);
 }

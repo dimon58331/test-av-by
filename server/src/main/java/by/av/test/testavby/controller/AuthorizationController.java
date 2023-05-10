@@ -43,7 +43,7 @@ public class AuthorizationController {
 
     @PostMapping("/signin")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody AuthenticationRequest authenticationRequest,
-                                                   BindingResult result){
+                                                   BindingResult result) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
 
@@ -59,14 +59,14 @@ public class AuthorizationController {
 
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest,
-                                               BindingResult result){
+                                               BindingResult result) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
         userService.createUser(convertRequestToUser(registrationRequest));
         return ResponseEntity.ok(new MessageResponse("Successfully"));
     }
 
-    private User convertRequestToUser(RegistrationRequest registrationRequest){
+    private User convertRequestToUser(RegistrationRequest registrationRequest) {
         return modelMapper.map(registrationRequest, User.class);
     }
 }

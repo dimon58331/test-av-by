@@ -9,6 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ImageModelRepository extends JpaRepository<ImageModel, Long> {
-    //public Optional<ImageModel> findImageModelByUser(User user);
-   Optional<ImageModel> findImageModelByPost(Post post);
+    Optional<ImageModel> findImageModelByPost(Post post);
 }

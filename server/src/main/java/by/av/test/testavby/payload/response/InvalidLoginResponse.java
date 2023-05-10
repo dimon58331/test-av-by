@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public class InvalidLoginResponse {
     private String email = "Invalid email";
+
     private String password = "Invalid password";
 }

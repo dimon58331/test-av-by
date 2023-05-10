@@ -33,7 +33,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain httpSecurity(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain httpSecurity(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and()
@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         AuthenticationManagerBuilder managerBuilder =
@@ -58,7 +59,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

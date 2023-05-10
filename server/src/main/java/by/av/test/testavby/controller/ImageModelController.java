@@ -24,8 +24,8 @@ public class ImageModelController {
 
     @PostMapping("/{postId}/upload")
     public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
-                                                    @RequestParam("file") MultipartFile file,
-                                                    Principal principal) throws IOException {
+                                                             @RequestParam("file") MultipartFile file,
+                                                             Principal principal) throws IOException {
         imageModelService.uploadImageToPost(Long.parseLong(postId), file, principal);
 
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
@@ -39,7 +39,7 @@ public class ImageModelController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ImageModel> getPostImage(@PathVariable("postId") String postId){
+    public ResponseEntity<ImageModel> getPostImage(@PathVariable("postId") String postId) {
         ImageModel imageModel = imageModelService.getPostImage(Long.parseLong(postId));
 
         return ResponseEntity.ok(imageModel);

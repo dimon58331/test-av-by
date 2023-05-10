@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,29 +32,50 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(Post post, Principal principal){
+    public Post createPost(Post post, Principal principal) {
         post.setUser(convertPrincipalToUser(principal));
         return postRepository.save(post);
     }
 
-    public Page<Post> getAllPosts(int page, int size){
+    public Page<Post> getAllPosts(int page, int size) {
         return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
     }
 
-    public Page<Post> getAllPostsByPrincipal(Principal principal, int page, int size){
+    public Page<Post> getAllPostsByBrand(Integer brandId, int page, int size) {
+        List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+                .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
+                        .getTransportBrand().getId().equals(brandId)).toList();
+        return new PageImpl<>(posts);
+    }
+
+    public Page<Post> getAllPostsByModel(Long modelId, int page, int size) {
+        List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+                .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
+                        .equals(modelId)).toList();
+        return new PageImpl<>(posts);
+    }
+
+    public Page<Post> getAllPostsByGenerationTransport(Long generationTransportId, int page, int size) {
+        List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+                .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
+                        .equals(generationTransportId)).toList();
+        return new PageImpl<>(posts);
+    }
+
+    public Page<Post> getAllPostsByPrincipal(Principal principal, int page, int size) {
         return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal),
                 PageRequest.of(page, size));
     }
 
     @Transactional
-    public void deletePostByIdAndPrincipal(Long postId, Principal principal){
+    public void deletePostByIdAndPrincipal(Long postId, Principal principal) {
         postRepository.deletePostByIdAndUser(postId, convertPrincipalToUser(principal));
     }
 
     @Transactional
-    public Post updateByPostAndPrincipal(Post post, Principal principal){
+    public Post updateByPostAndPrincipal(Post post, Principal principal) {
         Post updatedPost = postRepository.findPostByIdAndUser(post.getId(), convertPrincipalToUser(principal))
-                .orElseThrow(()->new PostNotFoundException("Post cannot be update"));
+                .orElseThrow(() -> new PostNotFoundException("Post cannot be update"));
 
         updatedPost.setTransportParameters(post.getTransportParameters());
         updatedPost.setPrice(post.getPrice());
@@ -64,19 +86,19 @@ public class PostService {
     }
 
     @Transactional
-    public Post updateByPostAndPostId(Post post, Long postId){
+    public Post updateByPostAndPostId(Post post, Long postId) {
         post.setId(postId);
         return postRepository.save(post);
     }
 
     @Transactional
-    public boolean likePost(Long postId, Principal principal){
-        Post post = postRepository.findById(postId).orElseThrow(()->new PostNotFoundException("Post cannot be found"));
+    public boolean likePost(Long postId, Principal principal) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
         User currentUser = convertPrincipalToUser(principal);
-        if (currentUser.getPosts().stream().noneMatch(post1 -> Objects.equals(post1.getId(), post.getId()))){
+        if (currentUser.getPosts().stream().noneMatch(post1 -> Objects.equals(post1.getId(), post.getId()))) {
             throw new PostNotFoundException("Post doesn't belong to the user");
         }
-        if (post.getLikedUsers().contains(currentUser.getEmail())){
+        if (post.getLikedUsers().contains(currentUser.getEmail())) {
             post.getLikedUsers().remove(currentUser.getEmail());
             return false;
         } else {

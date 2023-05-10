@@ -35,10 +35,10 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
 
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")){
+        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
             String jwtToken = authorization.substring(7);
 
             try {
@@ -52,7 +52,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            } catch (JWTVerificationException exception){
+            } catch (JWTVerificationException exception) {
                 LOG.atError().log("JWT token isn't valid");
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "JWT token isn't valid");
                 return;

@@ -22,7 +22,7 @@ public class AdminImageModelController {
 
     @PostMapping("/{postId}/upload")
     public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
-                                                    @RequestParam("file") MultipartFile file) throws IOException {
+                                                             @RequestParam("file") MultipartFile file) throws IOException {
         imageModelService.uploadImageToAnyPost(Long.parseLong(postId), file);
 
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));

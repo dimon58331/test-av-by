@@ -6,7 +6,8 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "generation_transport")
+@Table(name = "generation_transport", uniqueConstraints = @UniqueConstraint(columnNames = {"generation_name",
+        "transport_model_id"}))
 @Data
 public class GenerationTransport {
     @Id

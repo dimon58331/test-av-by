@@ -54,7 +54,7 @@ public class User {
     private ImageModel imageModel;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.createdDate = LocalDateTime.now();
     }
 }
