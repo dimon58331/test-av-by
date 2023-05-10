@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class GenerationTransportDTO {
+    private Long id;
 
     @NotEmpty(message = "Generation name cannot be empty")
     private String generationName;
@@ -14,6 +15,4 @@ public class GenerationTransportDTO {
 
     @NotEmpty(message = "End release year cannot be empty")
     private Integer endReleaseYear;
-
-    private TransportModelDTO transportModel;
 }

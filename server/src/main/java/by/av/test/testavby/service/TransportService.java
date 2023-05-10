@@ -1,5 +1,6 @@
 package by.av.test.testavby.service;
 
+import by.av.test.testavby.dto.transport.TransportParametersDTO;
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.transport.GenerationTransport;
 import by.av.test.testavby.entity.transport.TransportBrand;
@@ -112,6 +113,12 @@ public class TransportService {
             throw new TransportNotFoundException("Transport with these parameters not found");
         }
         return generationTransports;
+    }
+
+    public List<TransportParameters> getAllTransportParametersByGenerationTransport(Long generationTransportId) {
+        GenerationTransport generationTransport = generationTransportRepository.findById(generationTransportId)
+                .orElseThrow(() -> new TransportNotFoundException("Generation of this transport not found"));
+        return transportParametersRepository.findAllByGenerationTransportOrderByEnginePower(generationTransport);
     }
 
     public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYearsByTransportModel(Long transportModelId){

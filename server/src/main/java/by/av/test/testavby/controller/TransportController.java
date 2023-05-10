@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -64,6 +65,15 @@ public class TransportController {
         return transportService.getMaxAndMinGenerationTransportReleaseYearsByTransportModel(transportModelId);
     }
 
+    @GetMapping(value = "/all/transportParameters", params = {"generationTransportId"})
+    public ResponseEntity<List<TransportParametersDTO>> getAllTransportParametersByGenerationTransport(
+            @RequestParam("generationTransportId") Long generationTransportId){
+        List<TransportParametersDTO> transportParametersDTOS = transportService
+                .getAllTransportParametersByGenerationTransport(generationTransportId).stream()
+                .map(this::convertTransportParametersToTransportParametersDTO).toList();
+        return ResponseEntity.ok(transportParametersDTOS);
+    }
+
     @PostMapping("/{postId}/{transportId}/create")
     public ResponseEntity<Object> addTransportToPost(@PathVariable("transportId") String transportId,
                                                      @PathVariable("postId") String postId) {
@@ -79,12 +89,12 @@ public class TransportController {
         return ResponseEntity.ok(convertTransportParametersToTransportParametersDTO(transportParameters));
     }
 
-    private TransportParameters convertTransportParametersDTOToTransportParameters(TransportParametersDTO transportParametersDTO) {
-        return modelMapper.map(transportParametersDTO, TransportParameters.class);
+    private TransportParameters convertTransportParametersDTOToTransportParameters(TransportParametersDTO parameters) {
+        return modelMapper.map(parameters, TransportParameters.class);
     }
 
-    private TransportParametersDTO convertTransportParametersToTransportParametersDTO(TransportParameters transportParameters){
-        return modelMapper.map(transportParameters, TransportParametersDTO.class);
+    private TransportParametersDTO convertTransportParametersToTransportParametersDTO(TransportParameters parameters){
+        return modelMapper.map(parameters, TransportParametersDTO.class);
     }
 
     private TransportBrandDTO convertTransportBrandToTransportBrandDTO(TransportBrand transportBrand) {

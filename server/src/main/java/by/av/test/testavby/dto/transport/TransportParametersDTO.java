@@ -8,6 +8,7 @@ import lombok.Data;
 
 @Data
 public class TransportParametersDTO {
+    private Long id;
 
     @NotEmpty(message = "Body type cannot be empty")
     private EBodyType eBodyType;
@@ -20,6 +21,4 @@ public class TransportParametersDTO {
 
     @NotEmpty(message = "Engine power cannot be empty")
     private Double enginePower;
-
-    private GenerationTransportDTO generationTransport;
 }

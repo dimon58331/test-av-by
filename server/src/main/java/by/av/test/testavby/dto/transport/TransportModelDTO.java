@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class TransportModelDTO {
+    private Long id;
+
     @NotEmpty(message = "Model name cannot be empty")
     private String modelName;
-
-    private TransportBrandDTO transportBrand;
 }
