@@ -22,7 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -112,6 +112,26 @@ public class TransportService {
             throw new TransportNotFoundException("Transport with these parameters not found");
         }
         return generationTransports;
+    }
+
+    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYearsByTransportModel(Long transportModelId){
+        TransportModel transportModel = transportModelRepository.findById(transportModelId)
+                .orElseThrow(() -> new TransportNotFoundException("Transport model with this id not found"));
+
+        int minStartReleaseYear = generationTransportRepository
+                .findAllByTransportModelOrderByStartReleaseYear(transportModel).stream().findFirst().orElseThrow(
+                        () -> new TransportNotFoundException("Generation of this transport not found")
+                ).getStartReleaseYear();
+        int maxEndReleaseYear = generationTransportRepository
+                .findAllByTransportModelOrderByEndReleaseYearDesc(transportModel).stream().findFirst().orElseThrow(
+                        () -> new TransportNotFoundException("Generation of this transport not found")
+                ).getEndReleaseYear();
+
+        Map<String, Integer> generationTransportReleaseYears = new HashMap<>();
+        generationTransportReleaseYears.put("minStartReleaseYear", minStartReleaseYear);
+        generationTransportReleaseYears.put("maxEndReleaseYear", maxEndReleaseYear);
+
+        return generationTransportReleaseYears;
     }
 
     public TransportParameters getTransportParametersByPostId(Long postId){

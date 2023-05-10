@@ -11,7 +11,8 @@ import java.util.List;
 
 @Repository
 public interface GenerationTransportRepository extends JpaRepository<GenerationTransport, Long> {
-    List<GenerationTransport> findAllByTransportModel(TransportModel transportModel);
+    List<GenerationTransport> findAllByTransportModelOrderByStartReleaseYear(TransportModel transportModel);
+    List<GenerationTransport> findAllByTransportModelOrderByEndReleaseYearDesc(TransportModel transportModel);
     Page<GenerationTransport> findAllByTransportModelAndEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
             TransportModel transportModel, Integer endReleaseYear, Integer startReleaseYear, Pageable pageable);
 }

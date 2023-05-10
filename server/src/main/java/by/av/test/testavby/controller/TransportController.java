@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/transport")
@@ -55,6 +57,11 @@ public class TransportController {
                                                                   @RequestParam("transportModelId") Long transportModelId){
         return transportService.getAllGenerationTransportByReleaseYearAndTransportModelIdSortedByAsc(size, page,
                         releaseYear, transportModelId).map(this::convertGenerationTransportToGenerationTransportDTO);
+    }
+
+    @GetMapping(value = "/all/generation/releaseYears", params = {"transportModelId"})
+    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears(@RequestParam("transportModelId") Long transportModelId){
+        return transportService.getMaxAndMinGenerationTransportReleaseYearsByTransportModel(transportModelId);
     }
 
     @PostMapping("/{postId}/{transportId}/create")
