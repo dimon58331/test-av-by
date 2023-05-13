@@ -98,7 +98,7 @@ public class AdminTransportController {
         return ResponseEntity.ok(transportMapper.convertTransportParametersToTransportParametersDTO(createdTransportParameters));
     }
 
-    @PostMapping("/{transportId}/delete")
+    @DeleteMapping("/{transportId}/delete")
     public ResponseEntity<MessageResponse> deleteTransportById(@PathVariable("transportId") String transportId) {
         transportService.deleteTransportById(Long.parseLong(transportId));
 

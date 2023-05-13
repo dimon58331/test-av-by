@@ -37,7 +37,7 @@ public class AdminUserController {
                 .map(userMapper::convertUserToUserDTO));
     }
 
-    @PostMapping("/{userId}/update")
+    @PatchMapping("/{userId}/update")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDTO userDTO, BindingResult result,
                                              @PathVariable("userId") String userId) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
@@ -49,7 +49,7 @@ public class AdminUserController {
         return ResponseEntity.ok(userMapper.convertUserToUserDTO(updatedUser));
     }
 
-    @PostMapping("/{userId}/delete")
+    @DeleteMapping("/{userId}/delete")
     public ResponseEntity<MessageResponse> deleteUser(@PathVariable("userId") String userId) {
         userService.deleteUserById(Long.parseLong(userId));
         return ResponseEntity.ok(new MessageResponse("Deleted successfully"));

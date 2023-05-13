@@ -47,7 +47,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.convertUserToUserDTO(updatedUser));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteCurrentUser(Principal principal) {
         userService.deleteCurrentUser(principal);
         return ResponseEntity.ok(new MessageResponse("User deleted successfully"));

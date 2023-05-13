@@ -62,7 +62,7 @@ public class PostController {
         return postService.getAllPostsByPrincipal(principal, page, size).map(postMapper::convertPostToPostDTO);
     }
 
-    @PostMapping("/{postId}/delete")
+    @DeleteMapping("/{postId}/delete")
     public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal) {
         postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
 
@@ -76,7 +76,7 @@ public class PostController {
                 : ResponseEntity.ok(new MessageResponse("Post unliked successfully"));
     }
 
-    @PostMapping("/{postId}/update")
+    @PatchMapping("/{postId}/update")
     public ResponseEntity<Object> updatePost(@PathVariable("postId") String postId, @Valid @RequestBody PostDTO postDTO,
                                              BindingResult result, Principal principal) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);

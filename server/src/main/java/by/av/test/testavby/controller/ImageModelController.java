@@ -31,7 +31,7 @@ public class ImageModelController {
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
     }
 
-    @PostMapping("/{postId}/delete")
+    @DeleteMapping("/{postId}/delete")
     public ResponseEntity<MessageResponse> deletePostImage(@PathVariable("postId") String postId, Principal principal) {
         imageModelService.deletePostImage(Long.parseLong(postId), principal);
 

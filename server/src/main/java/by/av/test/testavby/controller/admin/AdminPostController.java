@@ -31,7 +31,7 @@ public class AdminPostController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @PostMapping("/{postId}/update")
+    @PatchMapping("/{postId}/update")
     public ResponseEntity<Object> updatePost(@PathVariable("postId") String postId, @Valid @RequestBody PostDTO postDTO,
                                              BindingResult result) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
@@ -43,7 +43,7 @@ public class AdminPostController {
         return ResponseEntity.ok(postMapper.convertPostToPostDTO(updatedPost));
     }
 
-    @PostMapping("/{postId}/delete")
+    @DeleteMapping("/{postId}/delete")
     public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal) {
         postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
 
