@@ -18,6 +18,7 @@ public class TestAvByApplication {
         return new JWTAuthenticationEntryPoint();
     }
 
+
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

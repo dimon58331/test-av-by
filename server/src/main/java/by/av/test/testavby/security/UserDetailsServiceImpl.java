@@ -1,6 +1,7 @@
 package by.av.test.testavby.security;
 
 import by.av.test.testavby.entity.User;
+import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.CustomUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final CustomUserRepository customUserRepository;
     private final Logger LOG = LoggerFactory.getLogger(UserDetailsServiceImpl.class);

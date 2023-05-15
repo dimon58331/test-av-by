@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -44,6 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
             try {
                 LOG.atInfo().log("Before check jwt token");
                 String email = jwtUtil.validateTokenAndRetrieveClaim(jwtToken);
+
                 UserDetailsImpl personDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -55,6 +58,10 @@ public class JWTFilter extends OncePerRequestFilter {
             } catch (JWTVerificationException exception) {
                 LOG.atError().log("JWT token isn't valid");
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "JWT token isn't valid");
+                return;
+            } catch (UsernameNotFoundException usernameNotFoundException) {
+                LOG.error(usernameNotFoundException.getMessage());
+                response.sendError(HttpStatus.NOT_FOUND.value(), usernameNotFoundException.getMessage());
                 return;
             }
         }
