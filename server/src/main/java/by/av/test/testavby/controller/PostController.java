@@ -35,6 +35,14 @@ public class PostController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
+    @GetMapping(value = "/all", params = {"page", "size", "minPrice", "maxPrice"})
+    public Page<PostDTO> getAllPostsByMinAndMaxPrice(@RequestParam("page") int page, @RequestParam("size") int size,
+                                                     @RequestParam("minPrice") double minPrice,
+                                                     @RequestParam("maxPrice") double maxPrice) {
+        return postService.getAllPostsByMinAndMaxPrice(page, size, minPrice, maxPrice)
+                .map(postMapper::convertPostToPostDTO);
+    }
+
     @GetMapping(value = "/all", params = {"page", "size"})
     public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
         return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);

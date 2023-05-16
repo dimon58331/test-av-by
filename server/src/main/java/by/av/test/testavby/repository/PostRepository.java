@@ -15,5 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findAllByOrderByCreatedDateDesc(Pageable pageable);
 
+    Page<Post> findAllByPriceBetweenOrderByCreatedDateDesc(Double minPrice, Double maxPrice, Pageable pageable);
+
     Optional<Post> findPostByIdAndUser(Long postId, User user);
 }

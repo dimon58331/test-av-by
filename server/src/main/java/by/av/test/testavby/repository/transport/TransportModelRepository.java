@@ -11,7 +11,5 @@ import java.util.List;
 
 @Repository
 public interface TransportModelRepository extends JpaRepository<TransportModel, Long> {
-    List<TransportModel> findAllByTransportBrand(TransportBrand brand);
-
     Page<TransportModel> findAllByTransportBrand(TransportBrand transportBrand, Pageable pageable);
 }

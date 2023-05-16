@@ -106,6 +106,10 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException("Post not found")));
     }
 
+    public Page<Post> getAllPostsByMinAndMaxPrice(int page, int size, double minPrice, double maxPrice) {
+        return postRepository.findAllByPriceBetweenOrderByCreatedDateDesc(minPrice, maxPrice, PageRequest.of(page, size));
+    }
+
     public Page<Post> getAllPosts(int page, int size) {
         return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
     }
