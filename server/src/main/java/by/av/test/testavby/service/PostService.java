@@ -31,7 +31,8 @@ public class PostService {
     private final Logger LOG = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
-    public PostService(PostRepository postRepository, TransportParametersRepository transportParametersRepository, CustomUserRepository customUserRepository) {
+    public PostService(PostRepository postRepository, TransportParametersRepository transportParametersRepository,
+                       CustomUserRepository customUserRepository) {
         this.postRepository = postRepository;
         this.transportParametersRepository = transportParametersRepository;
         this.customUserRepository = customUserRepository;
@@ -44,8 +45,9 @@ public class PostService {
     }
 
     @Transactional
-    public void addTransportParametersToPost(Long postId, Long transportParametersId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+    public void addTransportParametersToPost(Long postId, Long transportParametersId, Principal principal) {
+        Post post = postRepository.findPostByIdAndUser(postId, convertPrincipalToUser(principal))
+                .orElseThrow(() -> new PostNotFoundException("Post for current user cannot be found"));
         if (Objects.nonNull(post.getTransportParameters())) {
             throw new TransportExistsException("Transport for this post already added");
         }
@@ -56,7 +58,8 @@ public class PostService {
 
     @Transactional
     public void deletePostByIdAndPrincipal(Long postId, Principal principal) {
-        postRepository.deletePostByIdAndUser(postId, convertPrincipalToUser(principal));
+        postRepository.delete(postRepository.findPostByIdAndUser(postId, convertPrincipalToUser(principal))
+                .orElseThrow(() -> new PostNotFoundException("Post for current user not found")));
     }
 
     @Transactional
@@ -100,7 +103,7 @@ public class PostService {
 
     public Page<Post> getAllPostsByBrand(Integer brandId, int page, int size) {
         try {
-            List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
                     .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
                             .getTransportBrand().getId().equals(brandId)).toList();
             return new PageImpl<>(posts);
@@ -111,7 +114,7 @@ public class PostService {
 
     public Page<Post> getAllPostsByModel(Long modelId, int page, int size) {
         try {
-            List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
                     .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
                             .equals(modelId)).toList();
             return new PageImpl<>(posts);
@@ -122,12 +125,22 @@ public class PostService {
 
     public Page<Post> getAllPostsByGenerationTransport(Long generationTransportId, int page, int size) {
         try {
-            List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
                     .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
                             .equals(generationTransportId)).toList();
             return new PageImpl<>(posts);
         } catch (Exception e){
             throw new PostNotFoundException("Posts with this generation id " + generationTransportId + " not found");
+        }
+    }
+
+    public Page<Post> getAllPostsByTransportParameters(Long transportParametersId, int page, int size) {
+        try {
+            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                    .filter(post -> post.getTransportParameters().getId().equals(transportParametersId)).toList();
+            return new PageImpl<>(posts);
+        } catch (Exception e) {
+            throw new PostNotFoundException("Posts with this parameters id " + transportParametersId + " not found");
         }
     }
 

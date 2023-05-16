@@ -40,37 +40,38 @@ public class PostController {
         return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);
     }
 
-    @GetMapping(value = "/all", params = {"page", "size", "modelId"})
-    public Page<PostDTO> getAllPostsByModel(@RequestParam("page") int page, @RequestParam("size") int size,
-                                                      @RequestParam("modelId") Long modelId){
-        return postService.getAllPostsByModel(modelId, page, size).map(postMapper::convertPostToPostDTO);
-    }
-
-    @GetMapping(value = "/all", params = {"page", "size", "generationId"})
-    public Page<PostDTO> getAllPostsByGenerationTransport(@RequestParam("page") int page, @RequestParam("size") int size,
-                                                          @RequestParam("generationID") Long generationId){
-        return postService.getAllPostsByGenerationTransport(generationId, page, size)
-                .map(postMapper::convertPostToPostDTO);
-    }
-
     @GetMapping(value = "/all", params = {"page", "size", "brandId"})
     public Page<PostDTO> getAllPostsByBrand(@RequestParam("page") int page, @RequestParam("size") int size,
                                             @RequestParam("brandId") int brandId) {
         return postService.getAllPostsByBrand(brandId, page, size).map(postMapper::convertPostToPostDTO);
     }
 
+    @GetMapping(value = "/all", params = {"page", "size", "modelId"})
+    public Page<PostDTO> getAllPostsByModel(@RequestParam("page") int page, @RequestParam("size") int size,
+                                            @RequestParam("modelId") Long modelId){
+        return postService.getAllPostsByModel(modelId, page, size).map(postMapper::convertPostToPostDTO);
+    }
+
+    @GetMapping(value = "/all", params = {"page", "size", "generationId"})
+    public Page<PostDTO> getAllPostsByGenerationTransport(@RequestParam("page") int page, @RequestParam("size") int size,
+                                                          @RequestParam("generationId") Long generationId){
+        return postService.getAllPostsByGenerationTransport(generationId, page, size)
+                .map(postMapper::convertPostToPostDTO);
+    }
+
+    @GetMapping(value = "/all", params = {"page", "size", "transportParametersId"})
+    public Page<PostDTO> getAllPostsByTransportParameters(@RequestParam("page") int page, @RequestParam("size") int size,
+                                                          @RequestParam("transportParametersId") Long parametersId){
+        return postService.getAllPostsByTransportParameters(parametersId, page, size)
+                .map(postMapper::convertPostToPostDTO);
+    }
+
     @GetMapping(value = "/user/posts", params = {"page", "size"})
-    public Page<PostDTO> getAllPostsByPrincipal(Principal principal, @RequestParam("page") int page,
-                                                @RequestParam("size") int size) {
+    public Page<PostDTO> getAllPostsByPrincipal(@RequestParam("page") int page, @RequestParam("size") int size,
+                                                Principal principal) {
         return postService.getAllPostsByPrincipal(principal, page, size).map(postMapper::convertPostToPostDTO);
     }
 
-    @DeleteMapping("/{postId}/delete")
-    public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal) {
-        postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
-
-        return ResponseEntity.ok(new MessageResponse("Post deleted successfully"));
-    }
 
     @PostMapping("/create")
     public ResponseEntity<Object> createPost(@Valid @RequestBody PostDTO postDTO, BindingResult bindingResult,
@@ -91,8 +92,9 @@ public class PostController {
 
     @PostMapping("/{postId}/{transportParametersId}/add")
     public ResponseEntity<Object> addTransportParametersToPost(@PathVariable("transportParametersId") String transportId,
-                                                               @PathVariable("postId") String postId) {
-        postService.addTransportParametersToPost(Long.parseLong(postId), Long.parseLong(transportId));
+                                                               @PathVariable("postId") String postId,
+                                                               Principal principal) {
+        postService.addTransportParametersToPost(Long.parseLong(postId), Long.parseLong(transportId), principal);
 
         return ResponseEntity.ok(new MessageResponse("Transport added to post successfully"));
     }
@@ -107,5 +109,12 @@ public class PostController {
         Post updatedPost = postService.updateByPostAndPrincipal(postMapper.convertPostDTOToPost(postDTO), principal);
 
         return ResponseEntity.ok(postMapper.convertPostToPostDTO(updatedPost));
+    }
+
+    @DeleteMapping("/{postId}/delete")
+    public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal) {
+        postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
+
+        return ResponseEntity.ok(new MessageResponse("Post deleted successfully"));
     }
 }
