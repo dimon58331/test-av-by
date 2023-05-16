@@ -2,10 +2,14 @@ package by.av.test.testavby.service;
 
 import by.av.test.testavby.entity.Post;
 import by.av.test.testavby.entity.User;
+import by.av.test.testavby.entity.transport.TransportParameters;
 import by.av.test.testavby.exception.PostNotFoundException;
+import by.av.test.testavby.exception.TransportExistsException;
+import by.av.test.testavby.exception.TransportNotFoundException;
 import by.av.test.testavby.exception.UserNotFoundException;
 import by.av.test.testavby.repository.PostRepository;
 import by.av.test.testavby.repository.CustomUserRepository;
+import by.av.test.testavby.repository.transport.TransportParametersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +26,14 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
+    private final TransportParametersRepository transportParametersRepository;
     private final CustomUserRepository customUserRepository;
     private final Logger LOG = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
-    public PostService(PostRepository postRepository, CustomUserRepository customUserRepository) {
+    public PostService(PostRepository postRepository, TransportParametersRepository transportParametersRepository, CustomUserRepository customUserRepository) {
         this.postRepository = postRepository;
+        this.transportParametersRepository = transportParametersRepository;
         this.customUserRepository = customUserRepository;
     }
 
@@ -37,34 +43,15 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Page<Post> getAllPosts(int page, int size) {
-        return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
-    }
-
-    public Page<Post> getAllPostsByBrand(Integer brandId, int page, int size) {
-        List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
-                .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
-                        .getTransportBrand().getId().equals(brandId)).toList();
-        return new PageImpl<>(posts);
-    }
-
-    public Page<Post> getAllPostsByModel(Long modelId, int page, int size) {
-        List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
-                .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
-                        .equals(modelId)).toList();
-        return new PageImpl<>(posts);
-    }
-
-    public Page<Post> getAllPostsByGenerationTransport(Long generationTransportId, int page, int size) {
-        List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
-                .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
-                        .equals(generationTransportId)).toList();
-        return new PageImpl<>(posts);
-    }
-
-    public Page<Post> getAllPostsByPrincipal(Principal principal, int page, int size) {
-        return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal),
-                PageRequest.of(page, size));
+    @Transactional
+    public void addTransportParametersToPost(Long postId, Long transportParametersId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+        if (Objects.nonNull(post.getTransportParameters())) {
+            throw new TransportExistsException("Transport for this post already added");
+        }
+        TransportParameters transportParameters = transportParametersRepository.findById(transportParametersId)
+                .orElseThrow(() -> new TransportNotFoundException("Transport cannot be found"));
+        post.setTransportParameters(transportParameters);
     }
 
     @Transactional
@@ -105,6 +92,48 @@ public class PostService {
             post.getLikedUsers().add(currentUser.getEmail());
             return true;
         }
+    }
+
+    public Page<Post> getAllPosts(int page, int size) {
+        return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
+    }
+
+    public Page<Post> getAllPostsByBrand(Integer brandId, int page, int size) {
+        try {
+            List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+                    .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
+                            .getTransportBrand().getId().equals(brandId)).toList();
+            return new PageImpl<>(posts);
+        } catch (Exception e) {
+            throw new PostNotFoundException("Posts with this brand id " + brandId + " not found");
+        }
+    }
+
+    public Page<Post> getAllPostsByModel(Long modelId, int page, int size) {
+        try {
+            List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+                    .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
+                            .equals(modelId)).toList();
+            return new PageImpl<>(posts);
+        } catch (Exception e){
+            throw new PostNotFoundException("Posts with this model id " + modelId + " not found");
+        }
+    }
+
+    public Page<Post> getAllPostsByGenerationTransport(Long generationTransportId, int page, int size) {
+        try {
+            List<Post> posts = postRepository.findAll(PageRequest.of(page, size)).stream()
+                    .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
+                            .equals(generationTransportId)).toList();
+            return new PageImpl<>(posts);
+        } catch (Exception e){
+            throw new PostNotFoundException("Posts with this generation id " + generationTransportId + " not found");
+        }
+    }
+
+    public Page<Post> getAllPostsByPrincipal(Principal principal, int page, int size) {
+        return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal),
+                PageRequest.of(page, size));
     }
 
     private User convertPrincipalToUser(Principal principal) {

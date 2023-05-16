@@ -8,6 +8,9 @@ import by.av.test.testavby.entity.transport.GenerationTransport;
 import by.av.test.testavby.entity.transport.TransportBrand;
 import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
+import by.av.test.testavby.enums.EBodyType;
+import by.av.test.testavby.enums.ETransmissionType;
+import by.av.test.testavby.enums.ETypeEngine;
 import by.av.test.testavby.mapper.transport.TransportMapper;
 import by.av.test.testavby.payload.response.MessageResponse;
 import by.av.test.testavby.service.TransportService;
@@ -83,25 +86,49 @@ public class AdminTransportController {
         return ResponseEntity.ok(transportMapper.convertGenerationTransportToGenerationTransportDTO(createdGenerationTransport));
     }
 
-    @PostMapping(value = "/parameters/create", params = {"generationTransportId"})
+    @PostMapping(value = "/parameters/create", params = {"generationTransportId", "bodyType", "engineType", "transmissionType"})
     public ResponseEntity<Object> createTransportParameters(
             @Valid @RequestBody TransportParametersDTO transportParametersDTO, BindingResult result,
-            @RequestParam("generationTransportId") Long generationTransportId) {
+            @RequestParam("generationTransportId") Long generationTransportId, @RequestParam("bodyType") EBodyType eBodyType,
+            @RequestParam("engineType") ETypeEngine eTypeEngine,
+            @RequestParam("transmissionType") ETransmissionType eTransmissionType) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
 
         LOG.info(transportParametersDTO.toString());
 
         TransportParameters createdTransportParameters = transportService.createTransportParametersForGenerationTransport(
-                transportMapper.convertTransportParametersDTOToTransportParameters(transportParametersDTO), generationTransportId);
+                transportMapper.convertTransportParametersDTOToTransportParameters(transportParametersDTO),
+                generationTransportId, eBodyType, eTypeEngine, eTransmissionType);
 
         return ResponseEntity.ok(transportMapper.convertTransportParametersToTransportParametersDTO(createdTransportParameters));
     }
 
-    @DeleteMapping("/{transportId}/delete")
-    public ResponseEntity<MessageResponse> deleteTransportById(@PathVariable("transportId") String transportId) {
-        transportService.deleteTransportById(Long.parseLong(transportId));
+    @DeleteMapping("/parameters/delete/{id}")
+    public ResponseEntity<MessageResponse> deleteTransportParametersById(@PathVariable("id") String transportParametersId) {
+        transportService.deleteTransportParametersById(Long.parseLong(transportParametersId));
 
-        return ResponseEntity.ok(new MessageResponse("Transport deleted successfully"));
+        return ResponseEntity.ok(new MessageResponse("Transport parameters deleted successfully"));
+    }
+
+    @DeleteMapping("/generation/delete/{id}")
+    public ResponseEntity<MessageResponse> deleteGenerationTransportById(@PathVariable("id") String generationTransportId) {
+        transportService.deleteGenerationTransportById(Long.parseLong(generationTransportId));
+
+        return ResponseEntity.ok(new MessageResponse("Generation of this transport deleted successfully"));
+    }
+
+    @DeleteMapping("/model/delete/{id}")
+    public ResponseEntity<MessageResponse> deleteTransportModelById(@PathVariable("id") String transportModelId) {
+        transportService.deleteTransportModelById(Long.parseLong(transportModelId));
+
+        return ResponseEntity.ok(new MessageResponse("Transport model deleted successfully"));
+    }
+
+    @DeleteMapping("/brand/delete/{id}")
+    public ResponseEntity<MessageResponse> deleteTransportBrandById(@PathVariable("id") String transportBrandId) {
+        transportService.deleteTransportBrandById(Integer.parseInt(transportBrandId));
+
+        return ResponseEntity.ok(new MessageResponse("Transport brand deleted successfully"));
     }
 }

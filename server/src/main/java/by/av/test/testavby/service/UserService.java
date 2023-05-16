@@ -1,5 +1,6 @@
 package by.av.test.testavby.service;
 
+import by.av.test.testavby.dto.UserDTO;
 import by.av.test.testavby.entity.User;
 import by.av.test.testavby.exception.UserExistsException;
 import by.av.test.testavby.exception.UserNotFoundException;
@@ -51,9 +52,16 @@ public class UserService {
     }
 
     @Transactional
-    public User updateByUserAndUserId(User user, Long userId) {
-        user.setId(userId);
-        return customUserRepository.save(user);
+    public User updateByUserDTOAndUserId(UserDTO userDTO, Long userId) {
+        User oldUser = customUserRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with this id not found"));
+        oldUser.setEmail(userDTO.getEmail());
+        oldUser.setFirstname(userDTO.getFirstname());
+        oldUser.setLastname(userDTO.getLastname());
+        oldUser.setPatronymic(userDTO.getPatronymic());
+        oldUser.setPhoneNumber(userDTO.getPhoneNumber());
+
+        return customUserRepository.save(oldUser);
     }
 
     @Transactional

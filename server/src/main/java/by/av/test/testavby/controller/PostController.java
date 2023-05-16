@@ -35,19 +35,22 @@ public class PostController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Object> createPost(@Valid @RequestBody PostDTO postDTO, BindingResult bindingResult,
-                                             Principal principal) {
-        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
-        if (Objects.nonNull(errors)) return errors;
-
-        Post createdPost = postService.createPost(postMapper.convertPostDTOToPost(postDTO), principal);
-        return ResponseEntity.ok(postMapper.convertPostToPostDTO(createdPost));
-    }
-
     @GetMapping(value = "/all", params = {"page", "size"})
     public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
         return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);
+    }
+
+    @GetMapping(value = "/all", params = {"page", "size", "modelId"})
+    public Page<PostDTO> getAllPostsByModel(@RequestParam("page") int page, @RequestParam("size") int size,
+                                                      @RequestParam("modelId") Long modelId){
+        return postService.getAllPostsByModel(modelId, page, size).map(postMapper::convertPostToPostDTO);
+    }
+
+    @GetMapping(value = "/all", params = {"page", "size", "generationId"})
+    public Page<PostDTO> getAllPostsByGenerationTransport(@RequestParam("page") int page, @RequestParam("size") int size,
+                                                          @RequestParam("generationID") Long generationId){
+        return postService.getAllPostsByGenerationTransport(generationId, page, size)
+                .map(postMapper::convertPostToPostDTO);
     }
 
     @GetMapping(value = "/all", params = {"page", "size", "brandId"})
@@ -69,11 +72,29 @@ public class PostController {
         return ResponseEntity.ok(new MessageResponse("Post deleted successfully"));
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<Object> createPost(@Valid @RequestBody PostDTO postDTO, BindingResult bindingResult,
+                                             Principal principal) {
+        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
+        if (Objects.nonNull(errors)) return errors;
+
+        Post createdPost = postService.createPost(postMapper.convertPostDTOToPost(postDTO), principal);
+        return ResponseEntity.ok(postMapper.convertPostToPostDTO(createdPost));
+    }
+
     @PostMapping("/{postId}/like")
     public ResponseEntity<Object> addFavoritePost(@PathVariable("postId") String postId, Principal principal) {
         return postService.likePost(Long.parseLong(postId), principal)
                 ? ResponseEntity.ok(new MessageResponse("Post liked successfully"))
                 : ResponseEntity.ok(new MessageResponse("Post unliked successfully"));
+    }
+
+    @PostMapping("/{postId}/{transportParametersId}/add")
+    public ResponseEntity<Object> addTransportParametersToPost(@PathVariable("transportParametersId") String transportId,
+                                                               @PathVariable("postId") String postId) {
+        postService.addTransportParametersToPost(Long.parseLong(postId), Long.parseLong(transportId));
+
+        return ResponseEntity.ok(new MessageResponse("Transport added to post successfully"));
     }
 
     @PatchMapping("/{postId}/update")

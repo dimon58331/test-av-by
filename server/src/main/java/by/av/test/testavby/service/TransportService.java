@@ -5,6 +5,9 @@ import by.av.test.testavby.entity.transport.GenerationTransport;
 import by.av.test.testavby.entity.transport.TransportBrand;
 import by.av.test.testavby.entity.transport.TransportModel;
 import by.av.test.testavby.entity.transport.TransportParameters;
+import by.av.test.testavby.enums.EBodyType;
+import by.av.test.testavby.enums.ETransmissionType;
+import by.av.test.testavby.enums.ETypeEngine;
 import by.av.test.testavby.exception.PostNotFoundException;
 import by.av.test.testavby.exception.TransportExistsException;
 import by.av.test.testavby.exception.TransportNotFoundException;
@@ -46,22 +49,12 @@ public class TransportService {
     }
 
     @Transactional
-    public TransportParameters addTransportToPost(Long postId, Long transportParametersId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
-        if (Objects.nonNull(post.getTransportParameters())) {
-            throw new TransportExistsException("Transport for this post already exists");
-        }
-        TransportParameters transportParameters = transportParametersRepository.findById(transportParametersId)
-                .orElseThrow(() -> new TransportNotFoundException("Transport cannot be found"));
-        post.setTransportParameters(transportParameters);
-        return transportParametersRepository.save(transportParameters);
-    }
-
-    @Transactional
     public TransportBrand createTransportBrand(TransportBrand transportBrand) {
         try {
+            LOG.info("Before saving");
             return transportBrandRepository.save(transportBrand);
         } catch (Exception e) {
+            LOG.error("Exception!");
             throw new TransportExistsException("Transport with this brand already exists");
         }
     }
@@ -93,10 +86,16 @@ public class TransportService {
 
     @Transactional
     public TransportParameters createTransportParametersForGenerationTransport(TransportParameters transportParameters,
-                                                                               Long generationTransportId) {
+                                                                               Long generationTransportId,
+                                                                               EBodyType eBodyType,
+                                                                               ETypeEngine eTypeEngine,
+                                                                               ETransmissionType eTransmissionType) {
         GenerationTransport generationTransport = generationTransportRepository.findById(generationTransportId)
                 .orElseThrow(() -> new TransportNotFoundException("Generation of transport with this id not found"));
         transportParameters.setGenerationTransport(generationTransport);
+        transportParameters.setEBodyType(eBodyType);
+        transportParameters.setETransmissionType(eTransmissionType);
+        transportParameters.setETypeEngine(eTypeEngine);
         try {
             return transportParametersRepository.save(transportParameters);
         } catch (Exception e) {
@@ -105,8 +104,27 @@ public class TransportService {
     }
 
     @Transactional
-    public void deleteTransportById(Long transportId) {
-        transportParametersRepository.deleteById(transportId);
+    public void deleteTransportParametersById(Long transportId) {
+        transportParametersRepository.delete(transportParametersRepository.findById(transportId)
+                .orElseThrow(() -> new TransportNotFoundException("Transport parameters not found")));
+    }
+
+    @Transactional
+    public void deleteTransportModelById(Long transportModelId) {
+        transportModelRepository.delete(transportModelRepository.findById(transportModelId)
+                .orElseThrow(() -> new TransportNotFoundException("Transport model not found")));
+    }
+
+    @Transactional
+    public void deleteGenerationTransportById(Long generationTransportId) {
+        generationTransportRepository.delete(generationTransportRepository.findById(generationTransportId)
+                .orElseThrow(() -> new TransportNotFoundException("Generation of this transport not found")));
+    }
+
+    @Transactional
+    public void deleteTransportBrandById(Integer transportBrandId) {
+        transportBrandRepository.delete(transportBrandRepository.findById(transportBrandId)
+                .orElseThrow(() -> new TransportNotFoundException("Transport brand not found")));
     }
 
     public Page<TransportBrand> getAllTransportBrandSortByAsc(int size, int page) {

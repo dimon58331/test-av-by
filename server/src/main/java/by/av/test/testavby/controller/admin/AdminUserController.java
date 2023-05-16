@@ -43,8 +43,7 @@ public class AdminUserController {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(result);
         if (Objects.nonNull(errors)) return errors;
 
-        User updatedUser = userService.updateByUserAndUserId(userMapper.convertUserDTOToUser(userDTO),
-                Long.parseLong(userId));
+        User updatedUser = userService.updateByUserDTOAndUserId(userDTO, Long.parseLong(userId));
 
         return ResponseEntity.ok(userMapper.convertUserToUserDTO(updatedUser));
     }

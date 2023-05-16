@@ -73,16 +73,6 @@ public class TransportController {
         return ResponseEntity.ok(transportParametersDTOS);
     }
 
-    @PostMapping("/{postId}/{transportId}/add")
-    public ResponseEntity<Object> addTransportParametersToPost(@PathVariable("transportId") String transportId,
-                                                               @PathVariable("postId") String postId) {
-        TransportParameters createdTransportParameters = transportService
-                .addTransportToPost(Long.parseLong(postId), Long.parseLong(transportId));
-
-        return ResponseEntity.ok(transportMapper
-                .convertTransportParametersToTransportParametersDTO(createdTransportParameters));
-    }
-
     @GetMapping("/{postId}")
     public ResponseEntity<TransportParametersDTO> getTransport(@PathVariable("postId") String postId) {
         TransportParameters transportParameters = transportService.getTransportParametersByPostId(Long.parseLong(postId));
