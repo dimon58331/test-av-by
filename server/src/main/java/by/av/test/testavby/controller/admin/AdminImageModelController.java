@@ -20,7 +20,7 @@ public class AdminImageModelController {
         this.imageModelService = imageModelService;
     }
 
-    @PostMapping("/{postId}/upload")
+    @PostMapping("/post/{postId}/upload")
     public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
                                                              @RequestParam("file") MultipartFile file) throws IOException {
         imageModelService.uploadImageToAnyPost(Long.parseLong(postId), file);
@@ -28,9 +28,25 @@ public class AdminImageModelController {
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
     }
 
-    @DeleteMapping("/{postId}/delete")
+    @PostMapping("/generation/{generationTransportId}/upload")
+    public ResponseEntity<MessageResponse> uploadImageToGenerationTransport(@PathVariable("generationTransportId") String generationTransportId,
+                                                                            @RequestParam("file") MultipartFile file) throws IOException{
+        imageModelService.uploadImageToGenerationTransport(Long.parseLong(generationTransportId), file);
+        return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
+    }
+
+
+    @DeleteMapping("/post/{postId}/delete")
     public ResponseEntity<MessageResponse> deleteAnyPostImage(@PathVariable("postId") String postId) {
         imageModelService.deleteAnyPostImage(Long.parseLong(postId));
+
+        return ResponseEntity.ok(new MessageResponse("Post image deleted successfully"));
+    }
+
+    @DeleteMapping("/generation/{generationTransportId}/delete")
+    public ResponseEntity<MessageResponse> deleteGenerationTransportImage(@PathVariable("generationTransportId")
+                                                                              String generationTransportId) {
+        imageModelService.deleteGenerationTransportImage(Long.parseLong(generationTransportId));
 
         return ResponseEntity.ok(new MessageResponse("Post image deleted successfully"));
     }

@@ -42,9 +42,6 @@ public class Post {
     @Column(updatable = false, name = "created_date")
     private LocalDateTime createdDate;
 
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-    private ImageModel imageModel;
-
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();

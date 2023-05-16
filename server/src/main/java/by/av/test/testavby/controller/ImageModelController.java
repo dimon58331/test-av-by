@@ -22,7 +22,22 @@ public class ImageModelController {
         this.imageModelService = imageModelService;
     }
 
-    @PostMapping("/{postId}/upload")
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<ImageModel> getPostImage(@PathVariable("postId") String postId) {
+        ImageModel imageModel = imageModelService.getPostImage(Long.parseLong(postId));
+
+        return ResponseEntity.ok(imageModel);
+    }
+
+    @GetMapping("/generation/{generationTransportId}")
+    public ResponseEntity<ImageModel> getGenerationTransportImage(@PathVariable("generationTransportId")
+                                                                      String generationTransportId) {
+        ImageModel imageModel = imageModelService.getGenerationTransportImage(Long.parseLong(generationTransportId));
+
+        return ResponseEntity.ok(imageModel);
+    }
+
+    @PostMapping("/post/{postId}/upload")
     public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
                                                              @RequestParam("file") MultipartFile file,
                                                              Principal principal) throws IOException {
@@ -31,17 +46,11 @@ public class ImageModelController {
         return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
     }
 
-    @DeleteMapping("/{postId}/delete")
+    @DeleteMapping("/post/{postId}/delete")
     public ResponseEntity<MessageResponse> deletePostImage(@PathVariable("postId") String postId, Principal principal) {
         imageModelService.deletePostImage(Long.parseLong(postId), principal);
 
         return ResponseEntity.ok(new MessageResponse("Post image deleted successfully"));
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<ImageModel> getPostImage(@PathVariable("postId") String postId) {
-        ImageModel imageModel = imageModelService.getPostImage(Long.parseLong(postId));
-
-        return ResponseEntity.ok(imageModel);
-    }
 }

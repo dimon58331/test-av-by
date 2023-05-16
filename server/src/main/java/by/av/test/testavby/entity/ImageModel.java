@@ -19,12 +19,11 @@ public class ImageModel {
     private byte[] imageBytes;
 
     @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long userId;
 
     @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+    private Long postId;
+
+    @JsonIgnore
+    private Long generationTransportId;
 }
