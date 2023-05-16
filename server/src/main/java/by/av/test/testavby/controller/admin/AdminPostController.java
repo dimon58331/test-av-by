@@ -44,8 +44,8 @@ public class AdminPostController {
     }
 
     @DeleteMapping("/{postId}/delete")
-    public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId, Principal principal) {
-        postService.deletePostByIdAndPrincipal(Long.parseLong(postId), principal);
+    public ResponseEntity<Object> deletePost(@PathVariable("postId") String postId) {
+        postService.deletePostById(Long.parseLong(postId));
 
         return ResponseEntity.ok(new MessageResponse("Post deleted successfully"));
     }

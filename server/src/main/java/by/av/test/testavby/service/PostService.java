@@ -77,8 +77,11 @@ public class PostService {
 
     @Transactional
     public Post updateByPostAndPostId(Post post, Long postId) {
-        post.setId(postId);
-        return postRepository.save(post);
+        Post oldPost = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post not found"));
+        oldPost.setCaption(post.getCaption());
+        oldPost.setPrice(post.getPrice());
+        oldPost.setTitle(post.getTitle());
+        return postRepository.save(oldPost);
     }
 
     @Transactional
@@ -95,6 +98,12 @@ public class PostService {
             post.getLikedUsers().add(currentUser.getEmail());
             return true;
         }
+    }
+
+    @Transactional
+    public void deletePostById(Long postId) {
+        postRepository.delete(postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found")));
     }
 
     public Page<Post> getAllPosts(int page, int size) {
