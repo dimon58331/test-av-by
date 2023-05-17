@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 public class UserDTO {
+    private Long id;
+
     @NotEmpty(message = "This field must be filled in")
     private String firstname;
 
