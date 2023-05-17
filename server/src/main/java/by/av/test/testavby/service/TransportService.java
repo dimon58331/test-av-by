@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,8 @@ public class TransportService {
     @Autowired
     public TransportService(TransportParametersRepository transportParametersRepository,
                             TransportBrandRepository transportBrandRepository,
-                            TransportModelRepository transportModelRepository, GenerationTransportRepository generationTransportRepository, PostRepository postRepository) {
+                            TransportModelRepository transportModelRepository,
+                            GenerationTransportRepository generationTransportRepository, PostRepository postRepository) {
         this.transportParametersRepository = transportParametersRepository;
         this.transportBrandRepository = transportBrandRepository;
         this.transportModelRepository = transportModelRepository;
@@ -127,6 +129,67 @@ public class TransportService {
                 .orElseThrow(() -> new TransportNotFoundException("Transport brand not found")));
     }
 
+    public Page<TransportParameters> getAllTransportBySomeParameters(int size, int page, EBodyType eBodyType,
+                                                                ETransmissionType eTransmissionType,
+                                                                ETypeEngine eTypeEngine,
+                                                                Double enginePower, Integer minReleaseYear,
+                                                                Integer maxReleaseYear) {
+        Map<String, Integer> maxAndMinReleaseYears = getMaxAndMinGenerationTransportReleaseYears();
+        LOG.info("maxAndMinReleaseYears: " + maxAndMinReleaseYears.toString());
+        LOG.info("maxEndReleaseYear: " + maxAndMinReleaseYears.get("maxEndReleaseYear"));
+        LOG.info("minStartReleaseYear: " + maxAndMinReleaseYears.get("minStartReleaseYear"));
+
+        List<GenerationTransport> generationTransports = generationTransportRepository
+                .findAllByEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
+                        Objects.nonNull(maxReleaseYear) ? maxReleaseYear : maxAndMinReleaseYears.get("maxEndReleaseYear"),
+                        Objects.nonNull(minReleaseYear) ? minReleaseYear : maxAndMinReleaseYears.get("minStartReleaseYear")
+                );
+        LOG.info("Generation transports: " + generationTransports.size());
+
+        List<TransportParameters> transportParametersList = new ArrayList<>();
+
+        List<TransportParameters> finalTransportParametersList = transportParametersList;
+        generationTransports.forEach(generationTransport -> finalTransportParametersList.addAll(transportParametersRepository
+                .findAllByGenerationTransportOrderByEnginePower(generationTransport)));
+        LOG.info("transportParametersList: " + transportParametersList.size());
+
+        List<TransportParameters> tempTransportParametersList;
+
+        tempTransportParametersList = transportParametersList.stream().filter(
+                transportParameters -> transportParameters.getEBodyType().equals(eBodyType)
+        ).toList();
+        if (!tempTransportParametersList.isEmpty()) {
+            transportParametersList = tempTransportParametersList;
+        }
+        LOG.info("transportParametersList: " + transportParametersList.size());
+
+        tempTransportParametersList = transportParametersList.stream().filter(
+                transportParameters -> transportParameters.getETransmissionType().equals(eTransmissionType)
+        ).toList();
+        if (!tempTransportParametersList.isEmpty()) {
+            transportParametersList = tempTransportParametersList;
+        }
+        LOG.info("transportParametersList: " + transportParametersList.size());
+
+        tempTransportParametersList = transportParametersList.stream().filter(
+                transportParameters -> transportParameters.getETypeEngine().equals(eTypeEngine)
+        ).toList();
+        if (!tempTransportParametersList.isEmpty()) {
+            transportParametersList = tempTransportParametersList;
+        }
+        LOG.info("transportParametersList: " + transportParametersList.size());
+
+        tempTransportParametersList = transportParametersList.stream().filter(
+                transportParameters -> transportParameters.getEnginePower().equals(enginePower)
+        ).toList();
+        if (!tempTransportParametersList.isEmpty()) {
+            transportParametersList = tempTransportParametersList;
+        }
+        LOG.info("transportParametersList: " + transportParametersList.size());
+
+        return new PageImpl<>(transportParametersList, PageRequest.of(page, size), transportParametersList.size());
+    }
+
     public Page<TransportBrand> getAllTransportBrandSortByAsc(int size, int page) {
         return transportBrandRepository.findAll(PageRequest.of(page, size, Sort.by("brandName")));
     }
@@ -180,12 +243,12 @@ public class TransportService {
 
     public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
         int minStartReleaseYear = generationTransportRepository
-                .findAllByOrderByStartReleaseYear().stream().findFirst().orElseThrow(
+                .findAllByOrderByStartReleaseYearDesc().stream().findFirst().orElseThrow(
                         () -> new TransportNotFoundException("Generation of this transport not found")
                 ).getStartReleaseYear();
 
         int maxEndReleaseYear = generationTransportRepository
-                .findAllByOrderByEndReleaseYearDesc().stream().findFirst().orElseThrow(
+                .findAllByOrderByEndReleaseYear().stream().findFirst().orElseThrow(
                         () -> new TransportNotFoundException("Generation of this transport not found")
                 ).getEndReleaseYear();
 

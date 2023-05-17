@@ -5,6 +5,9 @@ import by.av.test.testavby.dto.transport.TransportBrandDTO;
 import by.av.test.testavby.dto.transport.TransportModelDTO;
 import by.av.test.testavby.dto.transport.TransportParametersDTO;
 import by.av.test.testavby.entity.transport.TransportParameters;
+import by.av.test.testavby.enums.EBodyType;
+import by.av.test.testavby.enums.ETransmissionType;
+import by.av.test.testavby.enums.ETypeEngine;
 import by.av.test.testavby.mapper.transport.TransportMapper;
 import by.av.test.testavby.service.TransportService;
 import org.slf4j.Logger;
@@ -29,6 +32,29 @@ public class TransportController {
     public TransportController(TransportMapper transportMapper, TransportService transportService) {
         this.transportMapper = transportMapper;
         this.transportService = transportService;
+    }
+
+    @GetMapping("/all")
+    public Page<TransportParametersDTO> getAllTransportBySomeParameters(@RequestParam("size") int size,
+                                                                        @RequestParam("page") int page,
+                                                                        @RequestParam(value = "bodyType", required = false)
+                                                                            EBodyType eBodyType,
+                                                                        @RequestParam(value = "transmissionType", required = false)
+                                                                            ETransmissionType eTransmissionType,
+                                                                        @RequestParam(value = "engineType", required = false)
+                                                                            ETypeEngine eTypeEngine,
+                                                                        @RequestParam(value = "enginePower", required = false)
+                                                                            Double enginePower,
+                                                                        @RequestParam(value = "minReleaseYear", required = false)
+                                                                            Integer minReleaseYear,
+                                                                        @RequestParam(value = "maxReleaseYear", required = false)
+                                                                            Integer maxReleaseYear) {
+        LOG.info("All parameters: " + size + ", " + page + ", " + eBodyType + ", " + eTransmissionType + ", "
+                + eTypeEngine + ", " + enginePower + ", " + minReleaseYear + ", " + maxReleaseYear);
+
+        return transportService.getAllTransportBySomeParameters(size, page, eBodyType, eTransmissionType, eTypeEngine,
+                        enginePower, minReleaseYear, maxReleaseYear)
+                .map(transportMapper::convertTransportParametersToTransportParametersDTO);
     }
 
     @GetMapping(value = "/all/brand", params = {"size", "page"})
@@ -73,8 +99,8 @@ public class TransportController {
         return ResponseEntity.ok(transportParametersDTOS);
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<TransportParametersDTO> getTransport(@PathVariable("postId") String postId) {
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<TransportParametersDTO> getTransportParametersToPost(@PathVariable("postId") String postId) {
         TransportParameters transportParameters = transportService.getTransportParametersByPostId(Long.parseLong(postId));
         return ResponseEntity.ok(transportMapper.convertTransportParametersToTransportParametersDTO(transportParameters));
     }
