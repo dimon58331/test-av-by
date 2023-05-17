@@ -136,13 +136,13 @@ public class TransportService {
                                                                 Integer maxReleaseYear) {
         Map<String, Integer> maxAndMinReleaseYears = getMaxAndMinGenerationTransportReleaseYears();
         LOG.info("maxAndMinReleaseYears: " + maxAndMinReleaseYears.toString());
-        LOG.info("maxEndReleaseYear: " + maxAndMinReleaseYears.get("maxEndReleaseYear"));
-        LOG.info("minStartReleaseYear: " + maxAndMinReleaseYears.get("minStartReleaseYear"));
+        LOG.info("minEndReleaseYear: " + maxAndMinReleaseYears.get("minEndReleaseYear"));
+        LOG.info("maxStartReleaseYear: " + maxAndMinReleaseYears.get("maxStartReleaseYear"));
 
         List<GenerationTransport> generationTransports = generationTransportRepository
                 .findAllByEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
-                        Objects.nonNull(maxReleaseYear) ? maxReleaseYear : maxAndMinReleaseYears.get("maxEndReleaseYear"),
-                        Objects.nonNull(minReleaseYear) ? minReleaseYear : maxAndMinReleaseYears.get("minStartReleaseYear")
+                        Objects.nonNull(maxReleaseYear) ? maxReleaseYear : maxAndMinReleaseYears.get("minEndReleaseYear"),
+                        Objects.nonNull(minReleaseYear) ? minReleaseYear : maxAndMinReleaseYears.get("maxStartReleaseYear")
                 );
         LOG.info("Generation transports: " + generationTransports.size());
 
@@ -235,8 +235,8 @@ public class TransportService {
                 ).getEndReleaseYear();
 
         Map<String, Integer> generationTransportReleaseYears = new HashMap<>();
-        generationTransportReleaseYears.put("minStartReleaseYear", minStartReleaseYear);
-        generationTransportReleaseYears.put("maxEndReleaseYear", maxEndReleaseYear);
+        generationTransportReleaseYears.put("maxStartReleaseYear", minStartReleaseYear);
+        generationTransportReleaseYears.put("minEndReleaseYear", maxEndReleaseYear);
 
         return generationTransportReleaseYears;
     }
