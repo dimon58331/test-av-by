@@ -48,6 +48,10 @@ public class UserService {
         } else if (userFoundByPhoneNumber.isPresent()) {
             throw new UserExistsException("User with this phone number '" + user.getPhoneNumber() + "' already exists!");
         }
+
+        if (user.getPhoneNumber().contains("+")) {
+            user.setPhoneNumber(user.getPhoneNumber().substring(1));
+        }
         customUserRepository.save(user);
     }
 
