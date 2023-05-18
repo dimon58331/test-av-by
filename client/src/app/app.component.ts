@@ -9,7 +9,7 @@ import {NotificationService} from "./service/notification.service";
 export class AppComponent {
   title = 'Test-av-by';
   constructor(private notificationService: NotificationService) {
-    if (window.sessionStorage.getItem('reloadAfterPage') === 'true'){
+    if (window.sessionStorage.getItem('reloadAfterPageLoad') === 'true'){
       if (window.sessionStorage.getItem('notification-message')){
         let message = window.sessionStorage.getItem('notification-message');
         // @ts-ignore

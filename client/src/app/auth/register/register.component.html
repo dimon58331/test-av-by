@@ -1,0 +1,81 @@
+<div class="login-page">
+  <h2>Register</h2>
+  <form [formGroup]="registerForm">
+    <div>
+      <div class="justify-content-center">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email">
+          <mat-error *ngIf="registerForm.hasError( 'email', 'email')">
+            Email must be correct (test@test)
+          </mat-error>
+          <mat-error *ngIf="registerForm.hasError( 'required', 'email')">
+            Email cannot be empty
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="justify-content-center">
+        <mat-form-field appearance="outline">
+          <mat-label>Phone number</mat-label>
+          <input matInput formControlName="phoneNumber">
+          <mat-error *ngIf="registerForm.hasError( 'required', 'phoneNumber')">
+            Phone number cannot be empty
+          </mat-error>
+          <mat-error *ngIf="registerForm.hasError( 'pattern', 'phoneNumber')">
+            Phone number should be like (+)375000000000, length 9-15 digits
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="justify-content-center">
+        <mat-form-field appearance="outline">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstname">
+          <mat-error *ngIf="registerForm.hasError('required', 'firstname')">
+            Firstname cannot be empty
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="justify-content-center">
+        <mat-form-field appearance="outline">
+          <mat-label>Lastname</mat-label>
+          <input matInput formControlName="lastname">
+          <mat-error *ngIf="registerForm.hasError('required', 'lastname')">
+            Lastname cannot be empty
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="justify-content-center">
+        <mat-form-field appearance="outline">
+          <mat-label>Patronymic</mat-label>
+          <input matInput formControlName="patronymic">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input type="password" matInput formControlName="password">
+          <mat-error *ngIf="registerForm.hasError('required', 'password')">
+            Password cannot be empty
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input type="password" matInput formControlName="confirmPassword" [errorStateMatcher]="matcher">
+          <mat-error *ngIf="registerForm.hasError('notSame')">
+            Passwords do not match
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div id="controls" class="row">
+        <button style="width: 20%" [disabled]="registerForm.invalid" (click)="submit()" mat-flat-button color="primary">
+          Register
+        </button>
+
+        <a routerLink="/login">Login</a>
+      </div>
+    </div>
+  </form>
+</div>

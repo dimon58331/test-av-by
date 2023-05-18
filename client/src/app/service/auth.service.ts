@@ -12,7 +12,7 @@ export class AuthService {
 
   public login(user: any): Observable<any> {
     return this.http.post(AUTH_API + 'signin', {
-      username: user.email,
+      email: user.email,
       password: user.password
     })
   }
