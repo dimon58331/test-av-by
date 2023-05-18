@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import * as http from "http";
 
 const USER_API = 'http://localhost:8080/api/user/';
 @Injectable({
@@ -16,7 +15,7 @@ export class UserService {
   }
 
   public updateCurrentUser(user: any): Observable<any> {
-    return this.http.post(USER_API + 'update', {
+    return this.http.patch(USER_API + 'update', {
       firstname: user.firstname,
       lastname: user.lastname,
       patronymic: user.patronymic,
@@ -26,6 +25,6 @@ export class UserService {
   }
 
   public deleteCurrentUser(): Observable<any> {
-    return this.http.post(USER_API + 'delete', null);
+    return this.http.delete(USER_API + 'delete');
   }
 }
