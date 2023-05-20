@@ -1,0 +1,22 @@
+<app-search-filter></app-search-filter>
+<div *ngIf="isPostsLoaded && isUserLoaded" class="index-page">
+  <mat-card class="post-card" *ngFor="let post of posts; let i = index">
+    <mat-card-header style="text-align: left">
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>{{post.title}}</mat-card-title>
+    </mat-card-header>
+    <img mat-card-image [src]="formatImage(post.image)" alt="post image" class="post-image"/>
+    <mat-card-subtitle align="start">Posted by {{post.user?.firstname}}</mat-card-subtitle>
+    <mat-card-content>
+      <p>{{post.caption}}</p>
+    </mat-card-content>
+
+<!--    <mat-card-actions align="start">-->
+<!--      <button mat-button (click)="likePost(post.id, i)">-->
+<!--        <mat-icon [ngClass]="post.likedUsers?.indexOf(user.username) !== -1 ? 'is-liked' : 'not-liked'">-->
+<!--          favorite-->
+<!--        </mat-icon> Like-->
+<!--      </button>-->
+<!--    </mat-card-actions>-->
+  </mat-card>
+</div>

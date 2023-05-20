@@ -15,4 +15,6 @@ public class PostDTO {
     private String title;
 
     private String caption;
+
+    private UserDTO user;
 }

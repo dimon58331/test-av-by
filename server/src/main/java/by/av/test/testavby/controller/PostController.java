@@ -45,6 +45,7 @@ public class PostController {
 
     @GetMapping(value = "/all", params = {"page", "size"})
     public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
+        LOG.info("page: " + page + ", size: " + size);
         return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);
     }
 

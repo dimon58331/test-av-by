@@ -23,7 +23,7 @@ export class ImageUploadService {
   }
 
   public getPostImage(postId: number): Observable<any> {
-    return this.http.get(IMAGE_API + postId);
+    return this.http.get(IMAGE_API + '/' + postId);
   }
 
 }
