@@ -4,6 +4,7 @@ import {TransportBrand} from "../../models/transport/TransportBrand";
 import {TransportModel} from "../../models/transport/TransportModel";
 import {GenerationTransport} from "../../models/transport/GenerationTransport";
 import {ImageUploadService} from "../../service/image-upload.service";
+import {TransportParameters} from "../../models/transport/TransportParameters";
 
 const PAGE = 0;
 const SIZE = 25;
@@ -17,12 +18,14 @@ export class SearchFilterComponent implements OnInit{
   transportBrands: TransportBrand[];
   transportModels: TransportModel[];
   generationsTransport: GenerationTransport[];
+  transportParameters: TransportParameters[];
 
   groupGenerationsTransport: Array<Array<GenerationTransport>>;
 
   isTransportBrandsLoaded = false;
   isTransportModelsLoaded = false;
   isGenerationsTransportLoaded = false;
+  isTransportParametersLoaded = false;
 
   constructor(private transportService: TransportService, private imageService: ImageUploadService) {
     // @ts-ignore
@@ -33,6 +36,8 @@ export class SearchFilterComponent implements OnInit{
     this.generationsTransport = null;
     // @ts-ignore
     this.groupGenerationsTransport = null;
+    // @ts-ignore
+    this.transportParameters = null;
   }
 
   makeIsTransportModelsLoadedFalse() {
@@ -43,11 +48,18 @@ export class SearchFilterComponent implements OnInit{
   }
 
   makeIsGenerationsTransportLoadedFalse() {
+    this.makeIsTransportParametersLoadedFalse();
     this.isGenerationsTransportLoaded = false;
     // @ts-ignore
     this.generationsTransport = null;
     // @ts-ignore
     this.groupGenerationsTransport = null;
+  }
+
+  makeIsTransportParametersLoadedFalse() {
+    this.isTransportParametersLoaded = false;
+    // @ts-ignore
+    this.transportParameters = null;
   }
 
   findTransportModelsByTransportBrandId(modelId: number){
@@ -73,6 +85,21 @@ export class SearchFilterComponent implements OnInit{
         this.isGenerationsTransportLoaded = true;
       }, error => {
         console.log(error);
+        this.makeIsGenerationsTransportLoadedFalse();
+      })
+  }
+
+  findTransportParametersByGenerationTransportId(generationTransportId: number) {
+    this.transportService.getTransportParametersByGenerationTransportId(generationTransportId)
+      .subscribe(value => {
+        console.log(value);
+        this.transportParameters = value;
+        console.log("transport parameters");
+        console.log(this.transportParameters);
+        this.isTransportParametersLoaded = true;
+      }, error => {
+        console.log(error);
+        this.makeIsTransportParametersLoadedFalse();
       })
   }
 

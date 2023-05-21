@@ -27,6 +27,11 @@ export class TransportService {
     return this.http.get(TRANSPORT_API + '/all/generation', {params: queryParameters});
   }
 
+  public getTransportParametersByGenerationTransportId(generationTransportId: number): Observable<any> {
+    let queryParameters = new HttpParams().append("generationTransportId", generationTransportId);
+    return this.http.get(TRANSPORT_API + '/all/transportParameters', {params: queryParameters});
+  }
+
   // public getGenerationsTransportByTransportModelId(page: number, size: number, transportModelId: number): Observable<any> {
   //   let queryParameters = new HttpParams().append("page", page).append("size", size)
   //     .append("transportModelId", transportModelId).append("releaseYear", 1996);

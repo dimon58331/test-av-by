@@ -32,13 +32,13 @@
       <mat-form-field class="generation-form-field">
         <mat-label>Choose generation</mat-label>
         <mat-select [disabled]="!this.isGenerationsTransportLoaded" class="generation-mat-select">
-          <mat-option value="option">
+          <mat-option value="option" (click)="makeIsTransportParametersLoadedFalse()">
             None
           </mat-option>
           <table class="generation-form-table">
             <tr *ngFor="let rowGenerationTransport of groupGenerationsTransport">
               <td *ngFor="let generationTransport of rowGenerationTransport">
-                <mat-option value="option">
+                <mat-option value="option" (click)="findTransportParametersByGenerationTransportId(generationTransport.id)">
                   <img class="generation-image" [src]="formatImage(generationTransport.image) ||
                   'https://thumbs.dreamstime.com/b/car-line-drawing-sedan-transportation-vehicle-outline-side-view-website-icon-template-branding-advertising-isolated-vector-203947269.jpg'" alt="post image"
                   />
@@ -53,8 +53,72 @@
       </mat-form-field>
     </td>
   </tr>
+  <div>
+    <h4>Parameters</h4>
+  </div>
   <tr>
-
+    <td>
+      <h4>Release year</h4>
+        <mat-form-field>
+          <mat-label>Choose release year</mat-label>
+          <mat-select [disabled]="!this.isTransportParametersLoaded">
+            <mat-option value="option">None</mat-option>
+            <mat-option value="option" *ngFor="let transportParameter of transportParameters">
+              {{transportParameter.releaseYear}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    </td>
+    <td>
+      <h4>Engine power</h4>
+      <mat-form-field>
+        <mat-label>Choose engine power</mat-label>
+        <mat-select [disabled]="!this.isTransportParametersLoaded">
+          <mat-option value="option">None</mat-option>
+          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
+            {{transportParameter.enginePower}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+    <td>
+      <h4>Body type</h4>
+      <mat-form-field>
+        <mat-label>Choose body type</mat-label>
+        <mat-select [disabled]="!this.isTransportParametersLoaded">
+          <mat-option value="option">None</mat-option>
+          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
+            {{transportParameter.bodyType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h4>Transmission type</h4>
+      <mat-form-field>
+        <mat-label>Choose transmission type</mat-label>
+        <mat-select [disabled]="!this.isTransportParametersLoaded">
+          <mat-option value="option">None</mat-option>
+          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
+            {{transportParameter.transmissionType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+    <td>
+      <h4>Engine type</h4>
+      <mat-form-field>
+        <mat-label>Choose engine type</mat-label>
+        <mat-select [disabled]="!this.isTransportParametersLoaded">
+          <mat-option value="option">None</mat-option>
+          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
+            {{transportParameter.typeEngine}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
   </tr>
 </table>
 

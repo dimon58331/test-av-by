@@ -1,7 +1,8 @@
 export interface TransportParameters {
   id: number;
-  eBodyType: EBodyType;
-  eTransmissionType: ETransmissionType;
-  eTypeEngine: ETypeEngine;
+  bodyType: string;
+  transmissionType: string;
+  typeEngine: string;
   enginePower: number;
+  releaseYear: number;
 }
