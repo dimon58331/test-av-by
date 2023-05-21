@@ -22,9 +22,14 @@ export class TransportService {
     return this.http.get(TRANSPORT_API + '/all/model', {params: queryParameters});
   }
 
-  public getGenerationsTransportByTransportModelId(page: number, size: number, transportModelId: number): Observable<any> {
-    let queryParameters = new HttpParams().append("page", page).append("size", size)
-      .append("transportModelId", transportModelId).append("releaseYear", 1996);
+  public getGenerationsTransportByTransportModelId(transportModelId: number): Observable<any> {
+    let queryParameters = new HttpParams().append("transportModelId", transportModelId);
     return this.http.get(TRANSPORT_API + '/all/generation', {params: queryParameters});
   }
+
+  // public getGenerationsTransportByTransportModelId(page: number, size: number, transportModelId: number): Observable<any> {
+  //   let queryParameters = new HttpParams().append("page", page).append("size", size)
+  //     .append("transportModelId", transportModelId).append("releaseYear", 1996);
+  //   return this.http.get(TRANSPORT_API + '/all/generation', {params: queryParameters});
+  // }
 }

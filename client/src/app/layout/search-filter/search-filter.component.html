@@ -1,41 +1,65 @@
-<!--<div (click)="">-->
-<!--</div>-->
+<table class="table-class">
+  <tr>
+    <td>
+      <h4>Brand</h4>
+      <mat-form-field>
+        <mat-label>Choose brand</mat-label>
+        <mat-select [disabled]="!this.isTransportBrandsLoaded">
+          <mat-option value="option" (click)="makeIsTransportModelsLoadedFalse()">None</mat-option>
+          <mat-option value="option" (click)="findTransportModelsByTransportBrandId(transportBrand.id)"
+                      *ngFor="let transportBrand of transportBrands">
+            {{transportBrand.brandName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+    <td>
+      <h4>Model</h4>
+      <mat-form-field>
+        <mat-label>Choose model</mat-label>
+        <mat-select [disabled]="!this.isTransportModelsLoaded">
+          <mat-option value="option" (click)="makeIsGenerationsTransportLoadedFalse()">None</mat-option>
+          <mat-option value="option" (click)="findGenerationsTransportByTransportModelId(transportModel.id)"
+                      *ngFor="let transportModel of transportModels">
+            {{transportModel.modelName}}
 
-  <h4>Brand</h4>
-  <mat-form-field>
-    <mat-label>Choose brand</mat-label>
-    <mat-select [disabled]="!this.isTransportBrandsLoaded">
-      <mat-option value="option" (click)="makeIsTransportModelsLoadedFalse()">None</mat-option>
-      <mat-option value="option" (click)="findTransportModelsByTransportBrandId(transportBrand.id)"
-                  *ngFor="let transportBrand of transportBrands; let i = index">
-        {{transportBrand.brandName}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+    <td>
+      <h4>Generation</h4>
+      <mat-form-field class="generation-form-field">
+        <mat-label>Choose generation</mat-label>
+        <mat-select [disabled]="!this.isGenerationsTransportLoaded" class="generation-mat-select">
+          <mat-option value="option">
+            None
+          </mat-option>
+          <table class="generation-form-table">
+            <tr *ngFor="let rowGenerationTransport of groupGenerationsTransport">
+              <td *ngFor="let generationTransport of rowGenerationTransport">
+                <mat-option value="option">
+                  <img class="generation-image" [src]="formatImage(generationTransport.image) ||
+                  'https://thumbs.dreamstime.com/b/car-line-drawing-sedan-transportation-vehicle-outline-side-view-website-icon-template-branding-advertising-isolated-vector-203947269.jpg'" alt="post image"
+                  />
+                  <div class="generation-text-mat-option">
+                    {{generationTransport.generationName}}, {{generationTransport.startReleaseYear}}..{{generationTransport.endReleaseYear}}
+                  </div>
+                </mat-option>
+              </td>
+            </tr>
+          </table>
+        </mat-select>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr>
 
-  <h4>Model</h4>
-  <mat-form-field>
-    <mat-label>Choose model</mat-label>
-    <mat-select [disabled]="!this.isTransportModelsLoaded">
-      <mat-option value="option" (click)="makeIsGenerationsTransportLoadedFalse()">None</mat-option>
-      <mat-option value="option" (click)="findGenerationsTransportByTransportModelId(transportModel.id)"
-                  *ngFor="let transportModel of transportModels; let i = index">
-        {{transportModel.modelName}}
+  </tr>
+</table>
 
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 
-  <h4>Generation</h4>
-  <mat-form-field>
-    <mat-label>Choose generation</mat-label>
-      <mat-select [disabled]="!this.isGenerationsTransportLoaded">
-      <mat-option value="option">None</mat-option>
-      <mat-option value="option"
-                  *ngFor="let generationTransport of generationsTransport; let i = index">
-        {{generationTransport.generationName}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+
+
 
 

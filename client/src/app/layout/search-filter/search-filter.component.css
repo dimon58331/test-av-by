@@ -1,0 +1,19 @@
+.generation-image {
+  border-radius: 60%;
+  width: 150px;
+  height: 110px;
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.generation-form-field {
+  width: 700px;
+}
+
+.generation-text-mat-option {
+  display: block;
+  text-align: center;
+}
+

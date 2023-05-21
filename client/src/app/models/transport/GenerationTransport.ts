@@ -3,4 +3,5 @@ export interface GenerationTransport {
   generationName: string;
   startReleaseYear: number;
   endReleaseYear: number;
+  image?: File;
 }

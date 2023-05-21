@@ -10,6 +10,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from '@angular/material/select';
+import {OverlayModule} from '@angular/cdk/overlay';
 
 @NgModule({
   exports: [
@@ -23,7 +24,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatDividerModule,
     MatCardModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    OverlayModule
   ]
 })
 
