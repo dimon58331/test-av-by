@@ -18,4 +18,7 @@ public class TransportParametersDTO {
 
     @NotNull(message = "Engine power cannot be empty")
     private Double enginePower;
+
+    @NotNull(message = "Release year cannot be empty")
+    private Integer releaseYear;
 }

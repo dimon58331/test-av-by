@@ -70,11 +70,18 @@ public class TransportController {
                 .map(transportMapper::convertTransportModelToTransportModelDTO);
     }
 
+    @GetMapping(value = "/all/generation", params = {"transportModelId"})
+    public ResponseEntity<List<GenerationTransportDTO>> getAllGenerationTransport(@RequestParam("transportModelId") Long transportModelId) {
+        return ResponseEntity.ok(transportService
+                .getAllGenerationTransportsByTransportModelIdSortedByReleaseYear(transportModelId)
+                .stream().map(transportMapper::convertGenerationTransportToGenerationTransportDTO).toList());
+    }
+
     @GetMapping(value = "/all/generation", params = {"size", "page", "releaseYear", "transportModelId"})
-    public Page<GenerationTransportDTO> getAllGenerationTransport(@RequestParam("size") int size,
-                                                                  @RequestParam("page") int page,
-                                                                  @RequestParam("releaseYear") int releaseYear,
-                                                                  @RequestParam("transportModelId") Long transportModelId) {
+    public Page<GenerationTransportDTO> getAllGenerationTransportByReleaseYear(@RequestParam("size") int size,
+                                                                               @RequestParam("page") int page,
+                                                                               @RequestParam("releaseYear") int releaseYear,
+                                                                               @RequestParam("transportModelId") Long transportModelId) {
         return transportService.getAllGenerationTransportByReleaseYearAndTransportModelIdSortedByAsc(size, page,
                 releaseYear, transportModelId).map(transportMapper::convertGenerationTransportToGenerationTransportDTO);
     }

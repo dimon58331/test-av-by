@@ -41,4 +41,7 @@ public class TransportParameters {
 
     @OneToMany(mappedBy = "transportParameters", cascade = CascadeType.ALL)
     private List<Post> post;
+
+    @Column(name = "release_year")
+    private Integer releaseYear;
 }

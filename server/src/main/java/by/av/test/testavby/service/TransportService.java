@@ -201,6 +201,15 @@ public class TransportService {
                 PageRequest.of(page, size, Sort.by("modelName")));
     }
 
+    public List<GenerationTransport> getAllGenerationTransportsByTransportModelIdSortedByReleaseYear(Long transportModelId) {
+        List<GenerationTransport> generationTransports = generationTransportRepository
+                .findAllByTransportModelOrderByStartReleaseYear(transportModelRepository.findById(transportModelId)
+                        .orElseThrow(() -> new TransportNotFoundException("Transport model with this id not found")));
+        if (generationTransports.isEmpty()) {
+            throw new TransportNotFoundException("Transport with these parameters not found");
+        }
+        return generationTransports;
+    }
     public Page<GenerationTransport> getAllGenerationTransportByReleaseYearAndTransportModelIdSortedByAsc(int size
             , int page, int releaseYear, Long transportModelId) {
         Page<GenerationTransport> generationTransports = generationTransportRepository
@@ -243,12 +252,12 @@ public class TransportService {
 
     public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
         int minStartReleaseYear = generationTransportRepository
-                .findAllByOrderByStartReleaseYearDesc().stream().findFirst().orElseThrow(
+                .findAllByOrderByStartReleaseYear().stream().findFirst().orElseThrow(
                         () -> new TransportNotFoundException("Generation of this transport not found")
                 ).getStartReleaseYear();
 
         int maxEndReleaseYear = generationTransportRepository
-                .findAllByOrderByEndReleaseYear().stream().findFirst().orElseThrow(
+                .findAllByOrderByEndReleaseYearDesc().stream().findFirst().orElseThrow(
                         () -> new TransportNotFoundException("Generation of this transport not found")
                 ).getEndReleaseYear();
 
