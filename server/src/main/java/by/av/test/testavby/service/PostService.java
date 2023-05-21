@@ -106,56 +106,94 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException("Post not found")));
     }
 
-    public Page<Post> getAllPostsByMinAndMaxPrice(int page, int size, double minPrice, double maxPrice) {
-        return postRepository.findAllByPriceBetweenOrderByCreatedDateDesc(minPrice, maxPrice, PageRequest.of(page, size));
-    }
-
     public Page<Post> getAllPosts(int page, int size) {
         return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
     }
 
-    public Page<Post> getAllPostsByBrand(Integer brandId, int page, int size) {
-        try {
-            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
-                    .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
-                            .getTransportBrand().getId().equals(brandId)).toList();
-            return new PageImpl<>(posts);
-        } catch (Exception e) {
-            throw new PostNotFoundException("Posts with this brand id " + brandId + " not found");
+    public Page<Post> getAllPostsByParameters(Integer page, Integer size, Double minPrice, Double maxPrice, Integer brandId,
+                                              Long modelId, Long generationTransportId, Long transportParametersId) {
+        List<Post> posts = null;
+        if (Objects.nonNull(page) && Objects.nonNull(size)) {
+            posts = getAllPosts(page, size).stream().toList();
+
+            if (Objects.nonNull(minPrice) || Objects.nonNull(maxPrice)){
+                try {
+                    LOG.info("By minPrice and maxPrice: " + minPrice + ", " + maxPrice);
+
+                    if (Objects.isNull(minPrice)) {
+                        minPrice = 0.0;
+                    } else if (Objects.isNull(maxPrice)) {
+                        maxPrice = Double.MAX_VALUE;
+                    }
+
+                    List<Post> postList = postRepository.findAllByPriceBetweenOrderByCreatedDateDesc(minPrice, maxPrice, PageRequest.of(page, size))
+                            .stream().toList();
+
+                    posts = getPosts(posts, postList);
+
+                } catch (Exception e) {
+                    throw new PostNotFoundException("Posts with this max " + maxPrice + " and min " + minPrice
+                            + " prices not found");
+                }
+            }
+            if (Objects.nonNull(brandId)) {
+                try {
+                    LOG.info("By brandId: " + brandId);
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                            .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
+                                    .getTransportBrand().getId().equals(brandId)).toList();
+                    posts = getPosts(posts, postList);
+
+                } catch (Exception e) {
+                    throw new PostNotFoundException("Posts with this brand id " + brandId + " not found");
+                }
+            }
+            if (Objects.nonNull(modelId)) {
+                LOG.info("By modelId");
+                try {
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                            .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
+                                    .equals(modelId)).toList();
+
+                    posts = getPosts(posts, postList);
+
+                } catch (Exception e){
+                    throw new PostNotFoundException("Posts with this model id " + modelId + " not found");
+                }
+            }
+            if (Objects.nonNull(generationTransportId)) {
+                try {
+                    LOG.info("By generationTransportId");
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                            .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
+                                    .equals(generationTransportId)).toList();
+
+                    posts = getPosts(posts, postList);
+
+                } catch (Exception e){
+                    throw new PostNotFoundException("Posts with this generation id " + generationTransportId + " not found");
+                }
+            }
+
+            if (Objects.nonNull(transportParametersId)) {
+                try {
+                    LOG.info("By transportParametersId");
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                            .filter(post -> post.getTransportParameters().getId().equals(transportParametersId)).toList();
+
+                    posts = getPosts(posts, postList);
+
+                } catch (Exception e) {
+                    throw new PostNotFoundException("Posts with this transport parameters id " + transportParametersId
+                            + " not found");
+                }
+            }
+
         }
+
+        return new PageImpl<>(posts);
     }
 
-    public Page<Post> getAllPostsByModel(Long modelId, int page, int size) {
-        try {
-            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
-                    .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
-                            .equals(modelId)).toList();
-            return new PageImpl<>(posts);
-        } catch (Exception e){
-            throw new PostNotFoundException("Posts with this model id " + modelId + " not found");
-        }
-    }
-
-    public Page<Post> getAllPostsByGenerationTransport(Long generationTransportId, int page, int size) {
-        try {
-            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
-                    .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
-                            .equals(generationTransportId)).toList();
-            return new PageImpl<>(posts);
-        } catch (Exception e){
-            throw new PostNotFoundException("Posts with this generation id " + generationTransportId + " not found");
-        }
-    }
-
-    public Page<Post> getAllPostsByTransportParameters(Long transportParametersId, int page, int size) {
-        try {
-            List<Post> posts = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
-                    .filter(post -> post.getTransportParameters().getId().equals(transportParametersId)).toList();
-            return new PageImpl<>(posts);
-        } catch (Exception e) {
-            throw new PostNotFoundException("Posts with this parameters id " + transportParametersId + " not found");
-        }
-    }
 
     public Page<Post> getAllPostsByPrincipal(Principal principal, int page, int size) {
         return postRepository.findPostsByUserOrderByCreatedDateDesc(convertPrincipalToUser(principal),
@@ -165,5 +203,20 @@ public class PostService {
     private User convertPrincipalToUser(Principal principal) {
         return customUserRepository.findUserByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("User with email " + principal.getName() + " not found"));
+    }
+
+    private List<Post> getPosts(List<Post> posts, List<Post> postList) throws Exception {
+        if (postList.isEmpty()) {
+            throw new Exception();
+        }
+
+        List<Post> equalsPosts = new ArrayList<>();
+        for (Post post : postList) {
+            equalsPosts.addAll(posts.stream().filter(post1 -> post1.getId().equals(post.getId())).toList());
+        }
+        if (!equalsPosts.isEmpty()) {
+            posts = equalsPosts;
+        }
+        return posts;
     }
 }

@@ -95,9 +95,9 @@ public class TransportService {
         GenerationTransport generationTransport = generationTransportRepository.findById(generationTransportId)
                 .orElseThrow(() -> new TransportNotFoundException("Generation of transport with this id not found"));
         transportParameters.setGenerationTransport(generationTransport);
-        transportParameters.setEBodyType(eBodyType);
-        transportParameters.setETransmissionType(eTransmissionType);
-        transportParameters.setETypeEngine(eTypeEngine);
+        transportParameters.setBodyType(eBodyType);
+        transportParameters.setTransmissionType(eTransmissionType);
+        transportParameters.setTypeEngine(eTypeEngine);
         try {
             return transportParametersRepository.save(transportParameters);
         } catch (Exception e) {
@@ -156,7 +156,7 @@ public class TransportService {
         List<TransportParameters> tempTransportParametersList;
 
         tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getEBodyType().equals(eBodyType)
+                transportParameters -> transportParameters.getBodyType().equals(eBodyType)
         ).toList();
         if (!tempTransportParametersList.isEmpty()) {
             transportParametersList = tempTransportParametersList;
@@ -164,7 +164,7 @@ public class TransportService {
         LOG.info("transportParametersList: " + transportParametersList.size());
 
         tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getETransmissionType().equals(eTransmissionType)
+                transportParameters -> transportParameters.getTransmissionType().equals(eTransmissionType)
         ).toList();
         if (!tempTransportParametersList.isEmpty()) {
             transportParametersList = tempTransportParametersList;
@@ -172,7 +172,7 @@ public class TransportService {
         LOG.info("transportParametersList: " + transportParametersList.size());
 
         tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getETypeEngine().equals(eTypeEngine)
+                transportParameters -> transportParameters.getTypeEngine().equals(eTypeEngine)
         ).toList();
         if (!tempTransportParametersList.isEmpty()) {
             transportParametersList = tempTransportParametersList;

@@ -35,47 +35,27 @@ public class PostController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-    @GetMapping(value = "/all", params = {"page", "size", "minPrice", "maxPrice"})
-    public Page<PostDTO> getAllPostsByMinAndMaxPrice(@RequestParam("page") int page, @RequestParam("size") int size,
-                                                     @RequestParam("minPrice") double minPrice,
-                                                     @RequestParam("maxPrice") double maxPrice) {
-        return postService.getAllPostsByMinAndMaxPrice(page, size, minPrice, maxPrice)
+//    @GetMapping(value = "/all", params = {"page", "size"})
+//    public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
+//        LOG.info("page: " + page + ", size: " + size);
+//        return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);
+//    }
+
+    @GetMapping( "/all")
+    public Page<PostDTO> getAllPostsByParameters(@RequestParam(value = "page") Integer page,
+                                                 @RequestParam(value = "size") Integer size,
+                                                 @RequestParam(value = "minPrice", required = false) Double minPrice,
+                                                 @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+                                                 @RequestParam(value = "brandId", required = false) Integer brandId,
+                                                 @RequestParam(value = "modelId", required = false) Long modelId,
+                                                 @RequestParam(value = "generationId", required = false) Long generationId,
+                                                 @RequestParam(value = "transportParametersId", required = false) Long parametersId) {
+        LOG.info("getAllPostsByParameters controller method");
+        return postService.getAllPostsByParameters(page, size, minPrice, maxPrice, brandId, modelId, generationId, parametersId)
                 .map(postMapper::convertPostToPostDTO);
     }
 
-    @GetMapping(value = "/all", params = {"page", "size"})
-    public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
-        LOG.info("page: " + page + ", size: " + size);
-        return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);
-    }
-
-    @GetMapping(value = "/all", params = {"page", "size", "brandId"})
-    public Page<PostDTO> getAllPostsByBrand(@RequestParam("page") int page, @RequestParam("size") int size,
-                                            @RequestParam("brandId") int brandId) {
-        return postService.getAllPostsByBrand(brandId, page, size).map(postMapper::convertPostToPostDTO);
-    }
-
-    @GetMapping(value = "/all", params = {"page", "size", "modelId"})
-    public Page<PostDTO> getAllPostsByModel(@RequestParam("page") int page, @RequestParam("size") int size,
-                                            @RequestParam("modelId") Long modelId){
-        return postService.getAllPostsByModel(modelId, page, size).map(postMapper::convertPostToPostDTO);
-    }
-
-    @GetMapping(value = "/all", params = {"page", "size", "generationId"})
-    public Page<PostDTO> getAllPostsByGenerationTransport(@RequestParam("page") int page, @RequestParam("size") int size,
-                                                          @RequestParam("generationId") Long generationId){
-        return postService.getAllPostsByGenerationTransport(generationId, page, size)
-                .map(postMapper::convertPostToPostDTO);
-    }
-
-    @GetMapping(value = "/all", params = {"page", "size", "transportParametersId"})
-    public Page<PostDTO> getAllPostsByTransportParameters(@RequestParam("page") int page, @RequestParam("size") int size,
-                                                          @RequestParam("transportParametersId") Long parametersId){
-        return postService.getAllPostsByTransportParameters(parametersId, page, size)
-                .map(postMapper::convertPostToPostDTO);
-    }
-
-    @GetMapping(value = "/user/posts", params = {"page", "size"})
+    @GetMapping( "/user/posts")
     public Page<PostDTO> getAllPostsByPrincipal(@RequestParam("page") int page, @RequestParam("size") int size,
                                                 Principal principal) {
         return postService.getAllPostsByPrincipal(principal, page, size).map(postMapper::convertPostToPostDTO);

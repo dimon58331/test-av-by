@@ -22,15 +22,15 @@ public class TransportParameters {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "body_type")
-    private EBodyType eBodyType;
+    private EBodyType bodyType;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "transmission_type")
-    private ETransmissionType eTransmissionType;
+    private ETransmissionType transmissionType;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "engine_type")
-    private ETypeEngine eTypeEngine;
+    private ETypeEngine typeEngine;
 
     @Column(name = "engine_power")
     private Double enginePower;

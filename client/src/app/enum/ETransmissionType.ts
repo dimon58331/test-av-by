@@ -1,4 +1,0 @@
-enum ETransmissionType {
-  MECHANICS,
-  AUTOMATIC
-}

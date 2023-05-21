@@ -10,11 +10,11 @@ import lombok.Data;
 public class TransportParametersDTO {
     private Long id;
 
-    private EBodyType eBodyType;
+    private EBodyType bodyType;
 
-    private ETransmissionType eTransmissionType;
+    private ETransmissionType transmissionType;
 
-    private ETypeEngine eTypeEngine;
+    private ETypeEngine typeEngine;
 
     @NotNull(message = "Engine power cannot be empty")
     private Double enginePower;
