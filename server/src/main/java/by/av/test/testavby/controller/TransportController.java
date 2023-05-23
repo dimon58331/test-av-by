@@ -55,6 +55,11 @@ public class TransportController {
                 .map(transportMapper::convertTransportParametersToTransportParametersDTO);
     }
 
+    @GetMapping("/all/transportParameters/enums")
+    public Map<String, List<String>> getAllTransportParametersEnums() {
+        return transportService.getAllTransportParametersEnums();
+    }
+
     @GetMapping(value = "/all/brand", params = {"size", "page"})
     public Page<TransportBrandDTO> getAllTransportBrand(@RequestParam("size") int size, @RequestParam("page") int page) {
         return transportService.getAllTransportBrandSortByAsc(size, page)
@@ -92,7 +97,7 @@ public class TransportController {
 
     @GetMapping(value = "/all/releaseYears")
     public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
-        return transportService.getMaxAndMinTransportReleaseYears();
+        return transportService.getMaxAndMinGenerationTransportReleaseYears();
     }
 
     @GetMapping(value = "/all/transportParameters", params = {"generationTransportId"})

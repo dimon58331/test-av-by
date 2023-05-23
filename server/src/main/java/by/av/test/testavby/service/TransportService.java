@@ -129,11 +129,38 @@ public class TransportService {
                 .orElseThrow(() -> new TransportNotFoundException("Transport brand not found")));
     }
 
+    public Map<String, List<String>> getAllTransportParametersEnums() {
+        Map<String, List<String>> allTransportParametersEnums = new HashMap<>();
+
+        List<String> bodyTypes = new ArrayList<>();
+        for (EBodyType eBodyType : EBodyType.values()) {
+            LOG.info(eBodyType.name());
+            bodyTypes.add(eBodyType.name());
+        }
+
+        List<String> transmissionTypes = new ArrayList<>();
+        for (ETransmissionType eTransmissionType : ETransmissionType.values()) {
+            LOG.info(eTransmissionType.name());
+            transmissionTypes.add(eTransmissionType.name());
+        }
+
+        List<String> engineTypes = new ArrayList<>();
+        for (ETypeEngine eTypeEngine : ETypeEngine.values()) {
+            LOG.info(eTypeEngine.name());
+            engineTypes.add(eTypeEngine.name());
+        }
+        allTransportParametersEnums.put("bodyTypes", bodyTypes);
+        allTransportParametersEnums.put("transmissionTypes", transmissionTypes);
+        allTransportParametersEnums.put("engineTypes", engineTypes);
+
+        return allTransportParametersEnums;
+    }
+
     public Page<TransportParameters> getAllTransportBySomeParameters(int size, int page, EBodyType eBodyType,
                                                                 ETransmissionType eTransmissionType,
                                                                 ETypeEngine eTypeEngine, Integer minReleaseYear,
                                                                 Integer maxReleaseYear) {
-        Map<String, Integer> maxAndMinReleaseYears = getMaxAndMinTransportReleaseYears();
+        Map<String, Integer> maxAndMinReleaseYears = getMaxAndMinTransportParametersReleaseYears();
 
 
         LOG.info("maxAndMinReleaseYears: " + maxAndMinReleaseYears.toString());
@@ -247,7 +274,7 @@ public class TransportService {
         return generationTransportReleaseYears;
     }
 
-    public Map<String, Integer> getMaxAndMinTransportReleaseYears() {
+    public Map<String, Integer> getMaxAndMinTransportParametersReleaseYears() {
         int minReleaseYear = transportParametersRepository
                 .findFirstByOrderByReleaseYear().orElseThrow(
                         () -> new TransportNotFoundException("Transport parameters not exist")
@@ -258,11 +285,29 @@ public class TransportService {
                         () -> new TransportNotFoundException("Transport parameters not exist")
                 ).getReleaseYear();
 
-        Map<String, Integer> generationTransportReleaseYears = new HashMap<>();
-        generationTransportReleaseYears.put("minReleaseYear", minReleaseYear);
-        generationTransportReleaseYears.put("maxReleaseYear", maxReleaseYear);
+        Map<String, Integer> transportParametersReleaseYears = new HashMap<>();
+        transportParametersReleaseYears.put("minReleaseYear", minReleaseYear);
+        transportParametersReleaseYears.put("maxReleaseYear", maxReleaseYear);
 
-        return generationTransportReleaseYears;
+        return transportParametersReleaseYears;
+    }
+
+    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
+        int minStartReleaseYear = generationTransportRepository.findFirstByOrderByStartReleaseYear()
+                .orElseThrow(
+                        () -> new TransportNotFoundException("Transport parameters not exist")
+                ).getStartReleaseYear();
+
+        int maxEndReleaseYear = generationTransportRepository.findFirstByOrderByEndReleaseYearDesc()
+                .orElseThrow(
+                        () -> new TransportNotFoundException("Transport parameters not exist")
+                ).getEndReleaseYear();
+
+        Map<String, Integer> transportParametersReleaseYears = new HashMap<>();
+        transportParametersReleaseYears.put("minStartReleaseYear", minStartReleaseYear);
+        transportParametersReleaseYears.put("maxEndReleaseYear", maxEndReleaseYear);
+
+        return transportParametersReleaseYears;
     }
 
     public TransportParameters getTransportParametersByPostId(Long postId) {
@@ -274,7 +319,7 @@ public class TransportService {
     private List<TransportParameters> getTransportParameters(List<TransportParameters> transportParameters,
                                                              List<TransportParameters> transportParametersList)
             throws Exception {
-        if (transportParameters.isEmpty()) {
+        if (transportParametersList.isEmpty()) {
             throw new Exception();
         }
 

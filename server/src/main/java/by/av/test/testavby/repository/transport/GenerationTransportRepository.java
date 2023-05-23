@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GenerationTransportRepository extends JpaRepository<GenerationTransport, Long> {
@@ -17,4 +18,8 @@ public interface GenerationTransportRepository extends JpaRepository<GenerationT
 
     Page<GenerationTransport> findAllByTransportModelAndEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
             TransportModel transportModel, Integer endReleaseYear, Integer startReleaseYear, Pageable pageable);
+
+    Optional<GenerationTransport> findFirstByOrderByEndReleaseYearDesc();
+
+    Optional<GenerationTransport> findFirstByOrderByStartReleaseYear();
 }
