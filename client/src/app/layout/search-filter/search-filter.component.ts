@@ -224,10 +224,25 @@ export class SearchFilterComponent implements OnInit{
     this.indexComponent.loadPostsByParameters(this.httpParams);
   }
 
+  private loadFilteredPostsByTransportParameters() {
+    this.indexComponent.loadPostsByTransportParameters(this.httpParams);
+  }
+
   private loadTransportParametersFilteredBySomeParameters() {
      this.transportService.getAllTransportParametersByHttpParameters(this.transportParametersHttpParams)
        .subscribe(value => {
-         console.log(value);
+         console.log("getAllTransportParametersByHttpParameters success");
+         this.transportParameters = value.content;
+         console.log(this.transportParameters);
+         this.transportParameters.forEach(value1 => {
+           this.httpParams.set("transportParametersId", value1.id);
+           this.loadFilteredPostsByTransportParameters();
+         });
+         console.log(this.transportParameters);
+       }, error => {
+         console.log("getAllTransportParametersByHttpParameters error");
+         this.httpParams.set("transportParametersId", 0);
+         this.loadFilteredPostsByTransportParameters();
        });
   }
 

@@ -57,11 +57,51 @@ export class IndexComponent implements OnInit{
   loadPostsByParameters(httpParameters: Map<string, number>){
     // @ts-ignore
     this.filteredPosts = null;
+    console.log("before do get request")
+    console.log(httpParameters);
     this.postService.getAllPostsByParameters(httpParameters)
       .subscribe(value => {
+        console.log("loadPostsByParameters success");
         this.filteredPosts = value.content;
+        console.log(this.filteredPosts);
+        console.log("httpParameters");
+        console.log(httpParameters);
       }, error => {
+        console.log("loadPostsByParameters error");
         console.log(error);
+        console.log(this.filteredPosts);
+        console.log("httpParameters");
+        console.log(httpParameters);
+      });
+  }
+
+  loadPostsByTransportParameters(httpParameters: Map<string, number>) {
+    console.log("before do get request by transport parameters")
+    console.log(httpParameters);
+    console.log("filtered posts");
+    console.log(this.filteredPosts);
+    // @ts-ignore
+    //this.filteredPosts = null;
+    let tempPosts: Post[];
+    this.postService.getAllPostsByParameters(httpParameters)
+      .subscribe(value => {
+        console.log("loadPostsByTransportParameters success");
+        tempPosts = value.content;
+        if (this.filteredPosts) {
+          this.filteredPosts.push(value.content);
+        } else {
+          this.filteredPosts = value.content;
+        }
+
+        console.log(this.filteredPosts);
+        console.log("httpParameters");
+        console.log(httpParameters);
+      }, error => {
+        console.log("loadPostsByParameters error");
+        console.log(error);
+        console.log(this.filteredPosts);
+        console.log("httpParameters");
+        console.log(httpParameters);
       });
   }
 
