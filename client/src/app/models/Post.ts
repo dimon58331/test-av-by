@@ -1,4 +1,5 @@
 import {User} from "./User";
+import {TransportParameters} from "./transport/TransportParameters";
 
 export interface Post{
   id: number;
@@ -6,5 +7,6 @@ export interface Post{
   title?: string;
   caption?: string;
   user?: User;
+  transportParameters?: TransportParameters;
   image?: File;
 }

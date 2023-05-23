@@ -32,11 +32,11 @@ export class TransportService {
     return this.http.get(TRANSPORT_API + '/all/transportParameters', {params: queryParameters});
   }
 
-  public getAllTransportParametersByHttpParameters(httpParameters: Map<string, number>): Observable<any> {
+  public getAllTransportParametersByHttpParameters(httpParameters: Map<string, string>): Observable<any> {
     let httpParams = new HttpParams();
     if (!httpParameters.get("page") && !httpParameters.get("size")) {
-      httpParameters.set("page", 0);
-      httpParameters.set("size", 25);
+      httpParameters.set("page", "0");
+      httpParameters.set("size", "25");
     }
 
     httpParameters.forEach((value, key) => {

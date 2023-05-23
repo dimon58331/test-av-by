@@ -17,15 +17,15 @@ export class PostService {
     return this.http.get(POST_API + '/all', {params: queryParams});
   }
 
-  public getAllPostsByParameters(httpParameters: Map<string, number>): Observable<any> {
+  public getAllPostsByParameters(httpParameters: Map<string, Array<number>>): Observable<any> {
     let httpParams = new HttpParams();
     if (!httpParameters.get("page") && !httpParameters.get("size")) {
-      httpParameters.set("page", 0);
-      httpParameters.set("size", 25);
+      httpParameters.set("page", [0]);
+      httpParameters.set("size", [25]);
     }
 
     httpParameters.forEach((value, key) => {
-      httpParams = httpParams.append(key, value);
+      httpParams = httpParams.append(key, value.toString());
     });
 
     return this.http.get(POST_API + '/all', {params: httpParams});

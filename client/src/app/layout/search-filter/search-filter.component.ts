@@ -7,6 +7,7 @@ import {ImageUploadService} from "../../service/image-upload.service";
 import {TransportParameters} from "../../models/transport/TransportParameters";
 import {PostService} from "../../service/post.service";
 import {IndexComponent} from "../index/index.component";
+import {isEmpty} from "rxjs";
 
 const PAGE = 0;
 const SIZE = 25;
@@ -33,8 +34,8 @@ export class SearchFilterComponent implements OnInit{
 
   private endReleaseYear: number;
   private startReleaseYear: number;
-  httpParams : Map<string, number>;
-  transportParametersHttpParams: Map<string, number>;
+  httpParams : Map<string, Array<number>>;
+  transportParametersHttpParams: Map<string, string>;
 
   constructor(private transportService: TransportService, private imageService: ImageUploadService,
               private postService: PostService, private indexComponent: IndexComponent) {
@@ -55,8 +56,8 @@ export class SearchFilterComponent implements OnInit{
     // @ts-ignore
     this.startReleaseYear = null;
 
-    this.httpParams = new Map<string, number>();
-    this.transportParametersHttpParams = new Map<string, number>();
+    this.httpParams = new Map<string, Array<number>>();
+    this.transportParametersHttpParams = new Map<string, string>();
     this.transportParametersEnums = new Map<string, Array<string>>();
   }
 
@@ -78,7 +79,7 @@ export class SearchFilterComponent implements OnInit{
         this.transportParametersEnums.set("transmissionTypes", value.transmissionTypes);
         this.transportParametersEnums.set("engineTypes", value.engineTypes);
         console.log(this.transportParametersEnums);
-      })
+      });
   }
 
   makeIsTransportModelsLoadedFalse() {
@@ -86,7 +87,6 @@ export class SearchFilterComponent implements OnInit{
     this.isTransportModelsLoaded = false;
     // @ts-ignore
     this.transportModels = null;
-    this.addBrandIdToHttpParameters(0);
   }
 
   makeIsGenerationsTransportLoadedFalse() {
@@ -96,14 +96,12 @@ export class SearchFilterComponent implements OnInit{
     this.generationsTransport = null;
     // @ts-ignore
     this.groupGenerationsTransport = null;
-    this.addModelIdToHttpParameters(0);
   }
 
   makeIsTransportParametersLoadedFalse() {
     this.isTransportParametersLoaded = false;
     // @ts-ignore
     this.transportParameters = null;
-    this.addGenerationIdToHttpParameters(0);
   }
 
   findTransportModelsByTransportBrandId(brandId: number){
@@ -150,40 +148,54 @@ export class SearchFilterComponent implements OnInit{
     return this.endReleaseYear > 0 ? this.endReleaseYear : this.releaseYears[this.releaseYears.length - 1];
   }
 
+  getSelectedOrDefaultStartReleaseYear(): number {
+    return this.startReleaseYear > 0 ? this.startReleaseYear : this.releaseYears[0];
+  }
+
   endReleaseYearSelected(endReleaseYear: number): void {
     console.log(endReleaseYear);
     // @ts-ignore
     this.endReleaseYear = endReleaseYear;
-  }
-
-  getSelectedOrDefaultStartReleaseYear(): number {
-    return this.startReleaseYear > 0 ? this.startReleaseYear : this.releaseYears[0];
+    this.addEndReleaseYearToHttpParameters(0);
   }
 
   startReleaseYearSelected(startReleaseYear: number): void {
     console.log(startReleaseYear);
     // @ts-ignore
     this.startReleaseYear = startReleaseYear;
+    this.addStartReleaseYearToHttpParameters(0);
   }
 
   addBrandIdToHttpParameters(transportBrandId: number) {
-    transportBrandId != 0
-      ? this.httpParams.set("brandId", transportBrandId)
-      : this.httpParams.delete("brandId");
+    if(transportBrandId != 0) {
+      this.httpParams.set("brandId", [transportBrandId]);
+    } else {
+      this.httpParams.delete("brandId");
+      this.httpParams.delete("modelId");
+      this.httpParams.delete("generationId");
+    }
     this.loadFilteredPosts();
   }
 
   addModelIdToHttpParameters(transportModelId: number) {
-    transportModelId != 0
-      ? this.httpParams.set("modelId", transportModelId)
-      : this.httpParams.delete("modelId");
+    if (transportModelId != 0) {
+      this.httpParams.set("modelId", [transportModelId]);
+    } else {
+      this.httpParams.delete("modelId");
+      this.httpParams.delete("generationId");
+    }
+
     this.loadFilteredPosts();
   }
 
   addGenerationIdToHttpParameters(generationTransportId: number) {
-    generationTransportId != 0
-      ? this.httpParams.set("generationId", generationTransportId)
-      : this.httpParams.delete("generationId");
+    if (generationTransportId != 0) {
+      this.httpParams.set("generationId", [generationTransportId]);
+    } else {
+      this.httpParams.delete("generationId");
+      this.httpParams.delete("brandId");
+    }
+
     this.loadFilteredPosts();
   }
 
@@ -191,7 +203,7 @@ export class SearchFilterComponent implements OnInit{
     console.log("Start release year: ");
     console.log(startReleaseYear);
     startReleaseYear != 0
-      ? this.transportParametersHttpParams.set("minReleaseYear", startReleaseYear)
+      ? this.transportParametersHttpParams.set("minReleaseYear", startReleaseYear.toString())
       : this.transportParametersHttpParams.delete("minReleaseYear");
     this.loadTransportParametersFilteredBySomeParameters();
   }
@@ -200,8 +212,35 @@ export class SearchFilterComponent implements OnInit{
     console.log("End release year: ");
     console.log(endReleaseYear);
     endReleaseYear != 0
-      ? this.transportParametersHttpParams.set("maxReleaseYear", endReleaseYear)
+      ? this.transportParametersHttpParams.set("maxReleaseYear", endReleaseYear.toString())
       : this.transportParametersHttpParams.delete("maxReleaseYear");
+    this.loadTransportParametersFilteredBySomeParameters();
+  }
+
+  addBodyTypeToHttpParameters(bodyType: string) {
+    console.log("Body type: ");
+    console.log(bodyType);
+    bodyType
+      ? this.transportParametersHttpParams.set("bodyType", bodyType)
+      : this.transportParametersHttpParams.delete("bodyType");
+    this.loadTransportParametersFilteredBySomeParameters();
+  }
+
+  addTransmissionTypeToHttpParameters(transmissionType: string) {
+    console.log("Transmission type: ");
+    console.log(transmissionType);
+    transmissionType
+      ? this.transportParametersHttpParams.set("transmissionType", transmissionType)
+      : this.transportParametersHttpParams.delete("transmissionType");
+    this.loadTransportParametersFilteredBySomeParameters();
+  }
+
+  addEngineTypeToHttpParameters(engineType: string) {
+    console.log("Engine type: ");
+    console.log(engineType);
+    engineType
+      ? this.transportParametersHttpParams.set("engineType", engineType)
+      : this.transportParametersHttpParams.delete("engineType");
     this.loadTransportParametersFilteredBySomeParameters();
   }
 
@@ -224,25 +263,24 @@ export class SearchFilterComponent implements OnInit{
     this.indexComponent.loadPostsByParameters(this.httpParams);
   }
 
-  private loadFilteredPostsByTransportParameters() {
-    this.indexComponent.loadPostsByTransportParameters(this.httpParams);
-  }
-
   private loadTransportParametersFilteredBySomeParameters() {
      this.transportService.getAllTransportParametersByHttpParameters(this.transportParametersHttpParams)
        .subscribe(value => {
          console.log("getAllTransportParametersByHttpParameters success");
          this.transportParameters = value.content;
          console.log(this.transportParameters);
+
+         let transportIdArray = new Array<number>;
          this.transportParameters.forEach(value1 => {
-           this.httpParams.set("transportParametersId", value1.id);
-           this.loadFilteredPostsByTransportParameters();
+           transportIdArray.push(value1.id);
          });
+         this.httpParams.set("transportParametersId", transportIdArray);
+         this.loadFilteredPosts();
          console.log(this.transportParameters);
        }, error => {
          console.log("getAllTransportParametersByHttpParameters error");
-         this.httpParams.set("transportParametersId", 0);
-         this.loadFilteredPostsByTransportParameters();
+         this.httpParams.set("transportParametersId", [0]);
+         this.loadFilteredPosts();
        });
   }
 
