@@ -8,12 +8,22 @@
   margin-bottom: 2rem;
 }
 
+mat-form-field {
+  width: auto;
+  display: inline-block;
+}
+
 .generation-form-field {
-  width: 700px;
+  width: 600px;
+  display: flex;
 }
 
 .generation-text-mat-option {
-  display: block;
+  display: flex;
   text-align: center;
+}
+
+.table-class {
+  display: inline-block;
 }
 

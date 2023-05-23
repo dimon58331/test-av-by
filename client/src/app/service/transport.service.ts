@@ -32,9 +32,28 @@ export class TransportService {
     return this.http.get(TRANSPORT_API + '/all/transportParameters', {params: queryParameters});
   }
 
-  // public getGenerationsTransportByTransportModelId(page: number, size: number, transportModelId: number): Observable<any> {
-  //   let queryParameters = new HttpParams().append("page", page).append("size", size)
-  //     .append("transportModelId", transportModelId).append("releaseYear", 1996);
-  //   return this.http.get(TRANSPORT_API + '/all/generation', {params: queryParameters});
-  // }
+  public getAllTransportParametersByHttpParameters(httpParameters: Map<string, number>): Observable<any> {
+    let httpParams = new HttpParams();
+    if (!httpParameters.get("page") && !httpParameters.get("size")) {
+      httpParameters.set("page", 0);
+      httpParameters.set("size", 25);
+    }
+
+    httpParameters.forEach((value, key) => {
+      httpParams = httpParams.append(key, value);
+    });
+
+    console.log("Transport parameters http params: ");
+    console.log(httpParams);
+
+    return this.http.get(TRANSPORT_API + '/all', {params: httpParams});
+  }
+
+  public getAllMaxMinReleaseYears():Observable<any> {
+    return this.http.get(TRANSPORT_API + '/all/releaseYears');
+  }
+
+  public getAllTransportParametersEnums(): Observable<any> {
+    return this.http.get(TRANSPORT_API + '/all/transportParameters/enums');
+  }
 }

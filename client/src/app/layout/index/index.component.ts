@@ -14,6 +14,7 @@ import {ImageUploadService} from "../../service/image-upload.service";
 export class IndexComponent implements OnInit{
   isPostsLoaded = false;
   isUserLoaded = false;
+  filteredPosts :Post[];
   posts: Post[];
   user: User;
   constructor(private postService: PostService,
@@ -24,21 +25,14 @@ export class IndexComponent implements OnInit{
     this.user = null;
     // @ts-ignore
     this.posts = null;
+    // @ts-ignore
+    this.filteredPosts = null;
     console.log("check constructor index.component");
   }
 
   ngOnInit(): void {
     console.log("check ngOnInit index.component");
-    this.postService.getAllPosts(0, 25)
-      .subscribe(value => {
-          this.posts = value.content;
-          console.log(this.posts);
-          this.getImagesToPosts(this.posts);
-          this.isPostsLoaded = true;
-        }, error => {
-          console.error(error);
-        }
-      );
+    this.loadAllPosts();
     this.userService.getCurrentUser()
       .subscribe(value => {
         console.log(value);
@@ -54,8 +48,42 @@ export class IndexComponent implements OnInit{
         .subscribe(value => {
           console.log(value);
           post.image = value.imageBytes;
-        })
+        }, error => {
+          console.log(error);
+        });
     });
+  }
+
+  loadPostsByParameters(httpParameters: Map<string, number>){
+    // @ts-ignore
+    this.filteredPosts = null;
+    this.postService.getAllPostsByParameters(httpParameters)
+      .subscribe(value => {
+        this.filteredPosts = value.content;
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  loadAllPosts() {
+    this.postService.getAllPosts(0, 25)
+      .subscribe(value => {
+          this.posts = value.content;
+          this.filteredPosts = value.content;
+          console.log(this.posts);
+          this.getImagesToPosts(this.posts);
+          this.isPostsLoaded = true;
+        }, error => {
+          console.error(error);
+        }
+      );
+  }
+
+  loadFilteredPostsToPosts() {
+    this.posts = this.filteredPosts;
+    if (this.posts) {
+      this.getImagesToPosts(this.posts);
+    }
   }
 
   //

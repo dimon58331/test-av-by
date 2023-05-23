@@ -16,6 +16,8 @@ export class ErrorInterceptorService implements HttpInterceptor{
       if (err.status === 401){
         this.tokenService.logOut(err.error.message);
       }
+      console.log("In error interceptor");
+      console.log(err);
       return throwError(err);
     }));
   }

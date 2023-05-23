@@ -5,8 +5,11 @@
       <mat-form-field>
         <mat-label>Choose brand</mat-label>
         <mat-select [disabled]="!this.isTransportBrandsLoaded">
-          <mat-option value="option" (click)="makeIsTransportModelsLoadedFalse()">None</mat-option>
-          <mat-option value="option" (click)="findTransportModelsByTransportBrandId(transportBrand.id)"
+          <mat-option value="option" (click)="makeIsTransportModelsLoadedFalse()">
+            None
+          </mat-option>
+          <mat-option value="option" (click)="findTransportModelsByTransportBrandId(transportBrand.id);
+                                              addBrandIdToHttpParameters(transportBrand.id)"
                       *ngFor="let transportBrand of transportBrands">
             {{transportBrand.brandName}}
           </mat-option>
@@ -18,8 +21,11 @@
       <mat-form-field>
         <mat-label>Choose model</mat-label>
         <mat-select [disabled]="!this.isTransportModelsLoaded">
-          <mat-option value="option" (click)="makeIsGenerationsTransportLoadedFalse()">None</mat-option>
-          <mat-option value="option" (click)="findGenerationsTransportByTransportModelId(transportModel.id)"
+          <mat-option value="option" (click)="makeIsGenerationsTransportLoadedFalse()">
+            None
+          </mat-option>
+          <mat-option value="option" (click)="findGenerationsTransportByTransportModelId(transportModel.id);
+                                              addModelIdToHttpParameters(transportModel.id)"
                       *ngFor="let transportModel of transportModels">
             {{transportModel.modelName}}
 
@@ -38,7 +44,8 @@
           <table class="generation-form-table">
             <tr *ngFor="let rowGenerationTransport of groupGenerationsTransport">
               <td *ngFor="let generationTransport of rowGenerationTransport">
-                <mat-option value="option" (click)="findTransportParametersByGenerationTransportId(generationTransport.id)">
+                <mat-option value="option" (click)="findTransportParametersByGenerationTransportId(generationTransport.id);
+                                                    addGenerationIdToHttpParameters(generationTransport.id)">
                   <img class="generation-image" [src]="formatImage(generationTransport.image) ||
                   'https://thumbs.dreamstime.com/b/car-line-drawing-sedan-transportation-vehicle-outline-side-view-website-icon-template-branding-advertising-isolated-vector-203947269.jpg'" alt="post image"
                   />
@@ -58,25 +65,35 @@
   </div>
   <tr>
     <td>
-      <h4>Release year</h4>
-        <mat-form-field>
-          <mat-label>Choose release year</mat-label>
-          <mat-select [disabled]="!this.isTransportParametersLoaded">
-            <mat-option value="option">None</mat-option>
-            <mat-option value="option" *ngFor="let transportParameter of transportParameters">
-              {{transportParameter.releaseYear}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+      <h4>Start release year</h4>
+      <mat-form-field>
+        <mat-label>Choose start release year</mat-label>
+        <mat-select [disabled]="!this.isTransportBrandsLoaded">
+          <mat-option value="option" (click)="startReleaseYearSelected(0); addStartReleaseYearToHttpParameters(0)">
+            None
+          </mat-option>
+          <mat-option value="option" *ngFor="let startReleaseYear of releaseYears"
+                      [disabled]="getSelectedOrDefaultEndReleaseYear() < startReleaseYear"
+                      (click)="startReleaseYearSelected(startReleaseYear);
+                               addStartReleaseYearToHttpParameters(startReleaseYear)">
+            {{startReleaseYear}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </td>
     <td>
-      <h4>Engine power</h4>
+      <h4>End release year</h4>
       <mat-form-field>
-        <mat-label>Choose engine power</mat-label>
-        <mat-select [disabled]="!this.isTransportParametersLoaded">
-          <mat-option value="option">None</mat-option>
-          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
-            {{transportParameter.enginePower}}
+        <mat-label>Choose end release year</mat-label>
+        <mat-select [disabled]="!this.isTransportBrandsLoaded">
+          <mat-option value="option" (click)="endReleaseYearSelected(0); addEndReleaseYearToHttpParameters(0)">
+            None
+          </mat-option>
+          <mat-option value="option" *ngFor="let endReleaseYear of releaseYears"
+                      (click)="endReleaseYearSelected(endReleaseYear);
+                               addEndReleaseYearToHttpParameters(endReleaseYear)"
+                      [disabled]="getSelectedOrDefaultStartReleaseYear() > endReleaseYear">
+            {{endReleaseYear}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -85,10 +102,10 @@
       <h4>Body type</h4>
       <mat-form-field>
         <mat-label>Choose body type</mat-label>
-        <mat-select [disabled]="!this.isTransportParametersLoaded">
+        <mat-select>
           <mat-option value="option">None</mat-option>
-          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
-            {{transportParameter.bodyType}}
+          <mat-option value="option" *ngFor="let bodyType of transportParametersEnums.get('bodyTypes')">
+            {{bodyType}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -99,10 +116,10 @@
       <h4>Transmission type</h4>
       <mat-form-field>
         <mat-label>Choose transmission type</mat-label>
-        <mat-select [disabled]="!this.isTransportParametersLoaded">
+        <mat-select>
           <mat-option value="option">None</mat-option>
-          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
-            {{transportParameter.transmissionType}}
+          <mat-option value="option" *ngFor="let transmissionType of transportParametersEnums.get('transmissionTypes')">
+            {{transmissionType}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -111,14 +128,23 @@
       <h4>Engine type</h4>
       <mat-form-field>
         <mat-label>Choose engine type</mat-label>
-        <mat-select [disabled]="!this.isTransportParametersLoaded">
+        <mat-select>
           <mat-option value="option">None</mat-option>
-          <mat-option value="option" *ngFor="let transportParameter of transportParameters">
-            {{transportParameter.typeEngine}}
+          <mat-option value="option" *ngFor="let engineType of transportParametersEnums.get('engineTypes')">
+            {{engineType}}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </td>
+  </tr>
+  <tr>
+    <div class="example-button-row">
+      <button mat-raised-button color="primary" (click)="showPosts()">
+        <div>
+          Show {{showPostsCount()}} posts
+        </div>
+      </button>
+    </div>
   </tr>
 </table>
 

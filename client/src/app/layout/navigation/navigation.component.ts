@@ -30,6 +30,10 @@ export class NavigationComponent implements OnInit{
     }
   }
 
+  reload(){
+    window.location.reload();
+  }
+
   logOut(): void {
     this.tokenService.logOut('Successfully logout!');
   }
