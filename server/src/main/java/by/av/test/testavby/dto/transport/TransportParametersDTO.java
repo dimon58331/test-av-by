@@ -21,4 +21,6 @@ public class TransportParametersDTO {
 
     @NotNull(message = "Release year cannot be empty")
     private Integer releaseYear;
+
+    private GenerationTransportDTO generationTransport;
 }

@@ -9,4 +9,6 @@ public class TransportModelDTO {
 
     @NotEmpty(message = "Model name cannot be empty")
     private String modelName;
+
+    private TransportBrandDTO transportBrand;
 }

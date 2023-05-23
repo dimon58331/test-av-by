@@ -228,8 +228,8 @@ public class PostService {
     }
 
     private void sortPostsByCreatedDateDesc(List<Post> unsortedPosts) {
-        unsortedPosts.sort((o1, o2) ->
-            o2.getCreatedDate().getSecond() - o1.getCreatedDate().getSecond()
-        );
+        Comparator<Post> byCreatedDate = Comparator.comparing(Post::getCreatedDate);
+        unsortedPosts.sort(byCreatedDate);
+        Collections.reverse(unsortedPosts);
     }
 }

@@ -1,5 +1,6 @@
 package by.av.test.testavby.dto;
 
+import by.av.test.testavby.dto.transport.TransportParametersDTO;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class PostDTO {
     private String caption;
 
     private UserDTO user;
+
+    private TransportParametersDTO transportParameters;
 }

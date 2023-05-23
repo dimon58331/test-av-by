@@ -24,4 +24,6 @@ public class GenerationTransportDTO {
     @Min(value = 1900, message = "1990 is min")
     @Max(value = 2023, message = "2023 is max")
     private Integer endReleaseYear;
+
+    private TransportModelDTO transportModel;
 }
