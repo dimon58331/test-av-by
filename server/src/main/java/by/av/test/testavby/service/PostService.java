@@ -191,7 +191,7 @@ public class PostService {
 
         }
 
-        return new PageImpl<>(posts);
+        return new PageImpl<>(posts, PageRequest.of(page, size), posts.size());
     }
 
 

@@ -43,17 +43,15 @@ public class TransportController {
                                                                             ETransmissionType eTransmissionType,
                                                                         @RequestParam(value = "engineType", required = false)
                                                                             ETypeEngine eTypeEngine,
-                                                                        @RequestParam(value = "enginePower", required = false)
-                                                                            Double enginePower,
                                                                         @RequestParam(value = "minReleaseYear", required = false)
                                                                             Integer minReleaseYear,
                                                                         @RequestParam(value = "maxReleaseYear", required = false)
                                                                             Integer maxReleaseYear) {
         LOG.info("All parameters: " + size + ", " + page + ", " + eBodyType + ", " + eTransmissionType + ", "
-                + eTypeEngine + ", " + enginePower + ", " + minReleaseYear + ", " + maxReleaseYear);
+                + eTypeEngine + ", " + minReleaseYear + ", " + maxReleaseYear);
 
         return transportService.getAllTransportBySomeParameters(size, page, eBodyType, eTransmissionType, eTypeEngine,
-                        enginePower, minReleaseYear, maxReleaseYear)
+                        minReleaseYear, maxReleaseYear)
                 .map(transportMapper::convertTransportParametersToTransportParametersDTO);
     }
 
@@ -94,7 +92,7 @@ public class TransportController {
 
     @GetMapping(value = "/all/releaseYears")
     public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
-        return transportService.getMaxAndMinGenerationTransportReleaseYears();
+        return transportService.getMaxAndMinTransportReleaseYears();
     }
 
     @GetMapping(value = "/all/transportParameters", params = {"generationTransportId"})

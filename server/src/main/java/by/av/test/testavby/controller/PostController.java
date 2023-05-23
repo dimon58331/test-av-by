@@ -35,12 +35,6 @@ public class PostController {
         this.responseErrorValidation = responseErrorValidation;
     }
 
-//    @GetMapping(value = "/all", params = {"page", "size"})
-//    public Page<PostDTO> getAllPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
-//        LOG.info("page: " + page + ", size: " + size);
-//        return postService.getAllPosts(page, size).map(postMapper::convertPostToPostDTO);
-//    }
-
     @GetMapping( "/all")
     public Page<PostDTO> getAllPostsByParameters(@RequestParam(value = "page") Integer page,
                                                  @RequestParam(value = "size") Integer size,

@@ -131,63 +131,60 @@ public class TransportService {
 
     public Page<TransportParameters> getAllTransportBySomeParameters(int size, int page, EBodyType eBodyType,
                                                                 ETransmissionType eTransmissionType,
-                                                                ETypeEngine eTypeEngine,
-                                                                Double enginePower, Integer minReleaseYear,
+                                                                ETypeEngine eTypeEngine, Integer minReleaseYear,
                                                                 Integer maxReleaseYear) {
-        Map<String, Integer> maxAndMinReleaseYears = getMaxAndMinGenerationTransportReleaseYears();
+        Map<String, Integer> maxAndMinReleaseYears = getMaxAndMinTransportReleaseYears();
+
+
         LOG.info("maxAndMinReleaseYears: " + maxAndMinReleaseYears.toString());
-        LOG.info("minEndReleaseYear: " + maxAndMinReleaseYears.get("minEndReleaseYear"));
-        LOG.info("maxStartReleaseYear: " + maxAndMinReleaseYears.get("maxStartReleaseYear"));
+        LOG.info("minReleaseYear: " + maxAndMinReleaseYears.get("minReleaseYear"));
+        LOG.info("maxReleaseYear: " + maxAndMinReleaseYears.get("maxReleaseYear"));
 
-        List<GenerationTransport> generationTransports = generationTransportRepository
-                .findAllByEndReleaseYearGreaterThanEqualAndStartReleaseYearLessThanEqual(
-                        Objects.nonNull(maxReleaseYear) ? maxReleaseYear : maxAndMinReleaseYears.get("minEndReleaseYear"),
-                        Objects.nonNull(minReleaseYear) ? minReleaseYear : maxAndMinReleaseYears.get("maxStartReleaseYear")
-                );
-        LOG.info("Generation transports: " + generationTransports.size());
+        List<TransportParameters> transportParameters = transportParametersRepository.findAll();
 
-        List<TransportParameters> transportParametersList = new ArrayList<>();
-
-        List<TransportParameters> finalTransportParametersList = transportParametersList;
-        generationTransports.forEach(generationTransport -> finalTransportParametersList.addAll(transportParametersRepository
-                .findAllByGenerationTransportOrderByEnginePower(generationTransport)));
-        LOG.info("transportParametersList: " + transportParametersList.size());
-
-        List<TransportParameters> tempTransportParametersList;
-
-        tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getBodyType().equals(eBodyType)
-        ).toList();
-        if (!tempTransportParametersList.isEmpty()) {
-            transportParametersList = tempTransportParametersList;
+        if (Objects.nonNull(minReleaseYear) || Objects.nonNull(maxReleaseYear)) {
+            try {
+                List<TransportParameters> transportParametersList = transportParametersRepository
+                        .findAllByReleaseYearBetween(
+                                Objects.nonNull(minReleaseYear) ? minReleaseYear
+                                        : maxAndMinReleaseYears.get("minReleaseYear"),
+                                Objects.nonNull(maxReleaseYear) ? maxReleaseYear
+                                        : maxAndMinReleaseYears.get("maxReleaseYear")
+                        );
+                transportParameters = getTransportParameters(transportParameters, transportParametersList);
+            } catch (Exception e) {
+                throw new TransportNotFoundException("Transport parameters not found");
+            }
         }
-        LOG.info("transportParametersList: " + transportParametersList.size());
-
-        tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getTransmissionType().equals(eTransmissionType)
-        ).toList();
-        if (!tempTransportParametersList.isEmpty()) {
-            transportParametersList = tempTransportParametersList;
+        if (Objects.nonNull(eBodyType)) {
+            try {
+                List<TransportParameters> transportParametersList = transportParametersRepository.findAll().stream()
+                        .filter(transportParameters1 -> transportParameters1.getBodyType().equals(eBodyType)).toList();
+                transportParameters = getTransportParameters(transportParameters, transportParametersList);
+            } catch (Exception e) {
+                throw new TransportNotFoundException("Transport parameters not found");
+            }
         }
-        LOG.info("transportParametersList: " + transportParametersList.size());
-
-        tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getTypeEngine().equals(eTypeEngine)
-        ).toList();
-        if (!tempTransportParametersList.isEmpty()) {
-            transportParametersList = tempTransportParametersList;
+        if (Objects.nonNull(eTransmissionType)) {
+            try {
+                List<TransportParameters> transportParametersList = transportParametersRepository.findAll().stream()
+                        .filter(transportParameters1 -> transportParameters1.getTransmissionType().equals(eTransmissionType)).toList();
+                transportParameters = getTransportParameters(transportParameters, transportParametersList);
+            } catch (Exception e) {
+                throw new TransportNotFoundException("Transport parameters not found");
+            }
         }
-        LOG.info("transportParametersList: " + transportParametersList.size());
-
-        tempTransportParametersList = transportParametersList.stream().filter(
-                transportParameters -> transportParameters.getEnginePower().equals(enginePower)
-        ).toList();
-        if (!tempTransportParametersList.isEmpty()) {
-            transportParametersList = tempTransportParametersList;
+        if (Objects.nonNull(eTypeEngine)) {
+            try {
+                List<TransportParameters> transportParametersList = transportParametersRepository.findAll().stream()
+                        .filter(transportParameters1 -> transportParameters1.getTypeEngine().equals(eTypeEngine)).toList();
+                transportParameters = getTransportParameters(transportParameters, transportParametersList);
+            } catch (Exception e) {
+                throw new TransportNotFoundException("Transport parameters not found");
+            }
         }
-        LOG.info("transportParametersList: " + transportParametersList.size());
 
-        return new PageImpl<>(transportParametersList, PageRequest.of(page, size), transportParametersList.size());
+        return new PageImpl<>(transportParameters, PageRequest.of(page, size), transportParameters.size());
     }
 
     public Page<TransportBrand> getAllTransportBrandSortByAsc(int size, int page) {
@@ -250,20 +247,20 @@ public class TransportService {
         return generationTransportReleaseYears;
     }
 
-    public Map<String, Integer> getMaxAndMinGenerationTransportReleaseYears() {
-        int minStartReleaseYear = generationTransportRepository
-                .findAllByOrderByStartReleaseYear().stream().findFirst().orElseThrow(
-                        () -> new TransportNotFoundException("Generation of this transport not found")
-                ).getStartReleaseYear();
+    public Map<String, Integer> getMaxAndMinTransportReleaseYears() {
+        int minReleaseYear = transportParametersRepository
+                .findFirstByOrderByReleaseYear().orElseThrow(
+                        () -> new TransportNotFoundException("Transport parameters not exist")
+                ).getReleaseYear();
 
-        int maxEndReleaseYear = generationTransportRepository
-                .findAllByOrderByEndReleaseYearDesc().stream().findFirst().orElseThrow(
-                        () -> new TransportNotFoundException("Generation of this transport not found")
-                ).getEndReleaseYear();
+        int maxReleaseYear = transportParametersRepository
+                .findFirstByOrderByReleaseYearDesc().orElseThrow(
+                        () -> new TransportNotFoundException("Transport parameters not exist")
+                ).getReleaseYear();
 
         Map<String, Integer> generationTransportReleaseYears = new HashMap<>();
-        generationTransportReleaseYears.put("minStartReleaseYear", minStartReleaseYear);
-        generationTransportReleaseYears.put("maxEndReleaseYear", maxEndReleaseYear);
+        generationTransportReleaseYears.put("minReleaseYear", minReleaseYear);
+        generationTransportReleaseYears.put("maxReleaseYear", maxReleaseYear);
 
         return generationTransportReleaseYears;
     }
@@ -272,5 +269,24 @@ public class TransportService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
         return transportParametersRepository.findTransportParametersByPost(post)
                 .orElseThrow(() -> new TransportNotFoundException("Transport cannot be found"));
+    }
+
+    private List<TransportParameters> getTransportParameters(List<TransportParameters> transportParameters,
+                                                             List<TransportParameters> transportParametersList)
+            throws Exception {
+        if (transportParameters.isEmpty()) {
+            throw new Exception();
+        }
+
+        List<TransportParameters> equalsTransportParameters = new ArrayList<>();
+        for (TransportParameters transportParameters1 : transportParametersList) {
+            equalsTransportParameters.addAll(transportParameters.stream().filter(
+                    transportParameters2 -> transportParameters2.getId().equals(transportParameters1.getId())).toList()
+            );
+        }
+        if (!equalsTransportParameters.isEmpty()) {
+            transportParameters = equalsTransportParameters;
+        }
+        return transportParameters;
     }
 }
