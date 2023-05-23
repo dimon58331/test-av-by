@@ -329,9 +329,11 @@ public class TransportService {
                     transportParameters2 -> transportParameters2.getId().equals(transportParameters1.getId())).toList()
             );
         }
-        if (!equalsTransportParameters.isEmpty()) {
-            transportParameters = equalsTransportParameters;
+        if (equalsTransportParameters.isEmpty()) {
+            throw new Exception();
         }
+        transportParameters = equalsTransportParameters;
+
         return transportParameters;
     }
 }
