@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -43,8 +44,11 @@ public class PostController {
                                                  @RequestParam(value = "brandId", required = false) Integer brandId,
                                                  @RequestParam(value = "modelId", required = false) Long modelId,
                                                  @RequestParam(value = "generationId", required = false) Long generationId,
-                                                 @RequestParam(value = "transportParametersId", required = false) Long parametersId) {
+                                                 @RequestParam(value = "transportParametersId", required = false) List<Long> parametersId) {
         LOG.info("getAllPostsByParameters controller method");
+        LOG.info("page: " + page + ", size: " + size + ", minPrice: " + minPrice+ ", maxPrice: " + maxPrice
+                + ", brandId: " + brandId + ", modelId: " + modelId + ", generationId: " + generationId
+                + ", parametersId: " + (Objects.nonNull(parametersId) ? parametersId.toString() : " null"));
         return postService.getAllPostsByParameters(page, size, minPrice, maxPrice, brandId, modelId, generationId, parametersId)
                 .map(postMapper::convertPostToPostDTO);
     }

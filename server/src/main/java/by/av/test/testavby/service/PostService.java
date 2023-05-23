@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,14 +108,15 @@ public class PostService {
     }
 
     public Page<Post> getAllPosts(int page, int size) {
-        return postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size));
+        List<Post> allPosts = postRepository.findAllByOrderByCreatedDateDesc();
+        return new PageImpl<>(allPosts, PageRequest.of(page, size), allPosts.size());
     }
 
     public Page<Post> getAllPostsByParameters(Integer page, Integer size, Double minPrice, Double maxPrice, Integer brandId,
-                                              Long modelId, Long generationTransportId, Long transportParametersId) {
+                                              Long modelId, Long generationTransportId, List<Long> transportParametersId) {
         List<Post> posts = null;
         if (Objects.nonNull(page) && Objects.nonNull(size)) {
-            posts = getAllPosts(page, size).stream().toList();
+            posts = postRepository.findAllByOrderByCreatedDateDesc().stream().toList();
 
             if (Objects.nonNull(minPrice) || Objects.nonNull(maxPrice)){
                 try {
@@ -126,7 +128,7 @@ public class PostService {
                         maxPrice = Double.MAX_VALUE;
                     }
 
-                    List<Post> postList = postRepository.findAllByPriceBetweenOrderByCreatedDateDesc(minPrice, maxPrice, PageRequest.of(page, size))
+                    List<Post> postList = postRepository.findAllByPriceBetweenOrderByCreatedDateDesc(minPrice, maxPrice)
                             .stream().toList();
 
                     posts = getPosts(posts, postList);
@@ -139,7 +141,7 @@ public class PostService {
             if (Objects.nonNull(brandId)) {
                 try {
                     LOG.info("By brandId: " + brandId);
-                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc().stream()
                             .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel()
                                     .getTransportBrand().getId().equals(brandId)).toList();
                     posts = getPosts(posts, postList);
@@ -151,7 +153,7 @@ public class PostService {
             if (Objects.nonNull(modelId)) {
                 LOG.info("By modelId");
                 try {
-                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc().stream()
                             .filter(post -> post.getTransportParameters().getGenerationTransport().getTransportModel().getId()
                                     .equals(modelId)).toList();
 
@@ -164,7 +166,7 @@ public class PostService {
             if (Objects.nonNull(generationTransportId)) {
                 try {
                     LOG.info("By generationTransportId");
-                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
+                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc().stream()
                             .filter(post -> post.getTransportParameters().getGenerationTransport().getId()
                                     .equals(generationTransportId)).toList();
 
@@ -178,8 +180,13 @@ public class PostService {
             if (Objects.nonNull(transportParametersId)) {
                 try {
                     LOG.info("By transportParametersId");
-                    List<Post> postList = postRepository.findAllByOrderByCreatedDateDesc(PageRequest.of(page, size)).stream()
-                            .filter(post -> post.getTransportParameters().getId().equals(transportParametersId)).toList();
+                    List<Post> postList = new ArrayList<>();
+                    for (Long transportId : transportParametersId) {
+                       postList.addAll(posts.stream()
+                               .filter(post -> post.getTransportParameters().getId().equals(transportId)).toList());
+                    }
+
+                    sortPostsByCreatedDateDesc(postList);
 
                     posts = getPosts(posts, postList);
 
@@ -218,5 +225,11 @@ public class PostService {
             posts = equalsPosts;
         }
         return posts;
+    }
+
+    private void sortPostsByCreatedDateDesc(List<Post> unsortedPosts) {
+        unsortedPosts.sort((o1, o2) ->
+            o2.getCreatedDate().getSecond() - o1.getCreatedDate().getSecond()
+        );
     }
 }

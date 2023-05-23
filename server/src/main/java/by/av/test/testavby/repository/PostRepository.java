@@ -7,15 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostsByUserOrderByCreatedDateDesc(User user, Pageable pageable);
 
-    Page<Post> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    List<Post> findAllByOrderByCreatedDateDesc();
 
-    Page<Post> findAllByPriceBetweenOrderByCreatedDateDesc(Double minPrice, Double maxPrice, Pageable pageable);
+    List<Post> findAllByPriceBetweenOrderByCreatedDateDesc(Double minPrice, Double maxPrice);
 
     Optional<Post> findPostByIdAndUser(Long postId, User user);
 }
