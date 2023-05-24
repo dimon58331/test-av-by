@@ -16,6 +16,7 @@ import { IndexComponent } from './layout/index/index.component';
 import { ProfileComponent } from './layout/profile/profile.component';
 import { SearchFilterComponent } from './layout/search-filter/search-filter.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatPaginatorModule
   ],
   providers: [
     authInterceptorProviders,

@@ -35,4 +35,11 @@
 <!--      </button>-->
 <!--    </mat-card-actions>-->
   </mat-card>
+
+  <mat-paginator [length]="totalPostsCountForPagination"
+                 [pageSize]="1"
+                 [pageSizeOptions]="[1, 3, 5]"
+                 (page)="setPageAndSize($event)"
+                 aria-label="Select page">
+  </mat-paginator>
 </div>

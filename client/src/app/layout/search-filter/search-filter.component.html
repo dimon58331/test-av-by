@@ -116,8 +116,6 @@
         </mat-select>
       </mat-form-field>
     </td>
-  </tr>
-  <tr>
     <td>
       <h4>Transmission type</h4>
       <mat-form-field>
@@ -127,7 +125,7 @@
             None
           </mat-option>
           <mat-option value="option" *ngFor="let transmissionType of transportParametersEnums.get('transmissionTypes')"
-                                      (click)="addTransmissionTypeToHttpParameters(transmissionType)">
+                      (click)="addTransmissionTypeToHttpParameters(transmissionType)">
             {{transmissionType}}
           </mat-option>
         </mat-select>
@@ -142,7 +140,7 @@
             None
           </mat-option>
           <mat-option value="option" *ngFor="let engineType of transportParametersEnums.get('engineTypes')"
-                                      (click)="addEngineTypeToHttpParameters(engineType)">
+                      (click)="addEngineTypeToHttpParameters(engineType)">
             {{engineType}}
           </mat-option>
         </mat-select>

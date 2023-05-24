@@ -7,7 +7,6 @@ import {ImageUploadService} from "../../service/image-upload.service";
 import {TransportParameters} from "../../models/transport/TransportParameters";
 import {PostService} from "../../service/post.service";
 import {IndexComponent} from "../index/index.component";
-import {isEmpty} from "rxjs";
 
 const PAGE = 0;
 const SIZE = 25;
@@ -32,10 +31,13 @@ export class SearchFilterComponent implements OnInit{
   isGenerationsTransportLoaded = false;
   isTransportParametersLoaded = false;
 
+  isPressButtonSearchPostsByParameters = false;
+
   private endReleaseYear: number;
   private startReleaseYear: number;
   httpParams : Map<string, Array<number>>;
   transportParametersHttpParams: Map<string, string>;
+
 
   constructor(private transportService: TransportService, private imageService: ImageUploadService,
               private postService: PostService, private indexComponent: IndexComponent) {
@@ -80,6 +82,10 @@ export class SearchFilterComponent implements OnInit{
         this.transportParametersEnums.set("engineTypes", value.engineTypes);
         console.log(this.transportParametersEnums);
       });
+  }
+
+  setIsPressButtonSearchPostsByParameters(isPressButtonSearchPostsByParameters: boolean) {
+    this.isPressButtonSearchPostsByParameters = isPressButtonSearchPostsByParameters;
   }
 
   makeIsTransportModelsLoadedFalse() {
@@ -245,11 +251,12 @@ export class SearchFilterComponent implements OnInit{
   }
 
   showPosts() {
+    this.isPressButtonSearchPostsByParameters = true;
     this.indexComponent.loadFilteredPostsToPosts();
   }
 
   showPostsCount(): number {
-    return this.indexComponent.filteredPosts ? this.indexComponent.filteredPosts.length : 0;
+    return this.indexComponent.totalPostsCount ? this.indexComponent.totalPostsCount : 0;
   }
 
   formatImage(img: any): any {
