@@ -13,6 +13,7 @@ import by.av.test.testavby.repository.transport.TransportParametersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -198,7 +199,16 @@ public class PostService {
 
         }
 
-        return new PageImpl<>(posts, PageRequest.of(page, size), posts.size());
+        LOG.info(page + " - page, " + size + " - size");
+        LOG.info((new PageImpl<>(posts, PageRequest.of(page, size), posts.size())).toString());
+
+        PagedListHolder<Post> pagedListHolder = new PagedListHolder<>(posts);
+
+
+        pagedListHolder.setPage(page);
+        pagedListHolder.setPageSize(size);
+
+        return new PageImpl<>(pagedListHolder.getPageList(), PageRequest.of(page, size), posts.size());
     }
 
 
