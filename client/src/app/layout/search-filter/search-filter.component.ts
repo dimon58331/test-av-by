@@ -31,11 +31,9 @@ export class SearchFilterComponent implements OnInit{
   isGenerationsTransportLoaded = false;
   isTransportParametersLoaded = false;
 
-  isPressButtonSearchPostsByParameters = false;
-
   private endReleaseYear: number;
   private startReleaseYear: number;
-  httpParams : Map<string, Array<number>>;
+  filteredHttpParams : Map<string, Array<number>>;
   transportParametersHttpParams: Map<string, string>;
 
 
@@ -58,7 +56,7 @@ export class SearchFilterComponent implements OnInit{
     // @ts-ignore
     this.startReleaseYear = null;
 
-    this.httpParams = new Map<string, Array<number>>();
+    this.filteredHttpParams = new Map<string, Array<number>>();
     this.transportParametersHttpParams = new Map<string, string>();
     this.transportParametersEnums = new Map<string, Array<string>>();
   }
@@ -69,6 +67,7 @@ export class SearchFilterComponent implements OnInit{
         this.transportBrands = value.content;
         this.isTransportBrandsLoaded = true;
         console.log(this.transportBrands);
+        this.loadFilteredPosts();
       });
     this.transportService.getAllMaxMinReleaseYears()
       .subscribe(value => {
@@ -82,10 +81,7 @@ export class SearchFilterComponent implements OnInit{
         this.transportParametersEnums.set("engineTypes", value.engineTypes);
         console.log(this.transportParametersEnums);
       });
-  }
 
-  setIsPressButtonSearchPostsByParameters(isPressButtonSearchPostsByParameters: boolean) {
-    this.isPressButtonSearchPostsByParameters = isPressButtonSearchPostsByParameters;
   }
 
   makeIsTransportModelsLoadedFalse() {
@@ -174,21 +170,21 @@ export class SearchFilterComponent implements OnInit{
 
   addBrandIdToHttpParameters(transportBrandId: number) {
     if(transportBrandId != 0) {
-      this.httpParams.set("brandId", [transportBrandId]);
+      this.filteredHttpParams.set("brandId", [transportBrandId]);
     } else {
-      this.httpParams.delete("brandId");
-      this.httpParams.delete("modelId");
-      this.httpParams.delete("generationId");
+      this.filteredHttpParams.delete("brandId");
+      this.filteredHttpParams.delete("modelId");
+      this.filteredHttpParams.delete("generationId");
     }
     this.loadFilteredPosts();
   }
 
   addModelIdToHttpParameters(transportModelId: number) {
     if (transportModelId != 0) {
-      this.httpParams.set("modelId", [transportModelId]);
+      this.filteredHttpParams.set("modelId", [transportModelId]);
     } else {
-      this.httpParams.delete("modelId");
-      this.httpParams.delete("generationId");
+      this.filteredHttpParams.delete("modelId");
+      this.filteredHttpParams.delete("generationId");
     }
 
     this.loadFilteredPosts();
@@ -196,29 +192,30 @@ export class SearchFilterComponent implements OnInit{
 
   addGenerationIdToHttpParameters(generationTransportId: number) {
     if (generationTransportId != 0) {
-      this.httpParams.set("generationId", [generationTransportId]);
+      this.filteredHttpParams.set("generationId", [generationTransportId]);
     } else {
-      this.httpParams.delete("generationId");
-      this.httpParams.delete("brandId");
+      this.filteredHttpParams.delete("generationId");
     }
 
     this.loadFilteredPosts();
   }
 
   addStartReleaseYearToHttpParameters(startReleaseYear: number ) {
+    this.startReleaseYear = startReleaseYear;
     console.log("Start release year: ");
-    console.log(startReleaseYear);
-    startReleaseYear != 0
-      ? this.transportParametersHttpParams.set("minReleaseYear", startReleaseYear.toString())
+    console.log(this.startReleaseYear);
+    this.startReleaseYear != 0
+      ? this.transportParametersHttpParams.set("minReleaseYear", this.startReleaseYear.toString())
       : this.transportParametersHttpParams.delete("minReleaseYear");
     this.loadTransportParametersFilteredBySomeParameters();
   }
 
   addEndReleaseYearToHttpParameters(endReleaseYear: number ) {
+    this.endReleaseYear = endReleaseYear;
     console.log("End release year: ");
-    console.log(endReleaseYear);
-    endReleaseYear != 0
-      ? this.transportParametersHttpParams.set("maxReleaseYear", endReleaseYear.toString())
+    console.log(this.endReleaseYear);
+    this.endReleaseYear != 0
+      ? this.transportParametersHttpParams.set("maxReleaseYear", this.endReleaseYear.toString())
       : this.transportParametersHttpParams.delete("maxReleaseYear");
     this.loadTransportParametersFilteredBySomeParameters();
   }
@@ -250,13 +247,12 @@ export class SearchFilterComponent implements OnInit{
     this.loadTransportParametersFilteredBySomeParameters();
   }
 
-  showPosts() {
-    this.isPressButtonSearchPostsByParameters = true;
+  showFilteredPosts() {
     this.indexComponent.loadFilteredPostsToPosts();
   }
 
-  showPostsCount(): number {
-    return this.indexComponent.totalPostsCount ? this.indexComponent.totalPostsCount : 0;
+  showFilteredPostsCount(): number {
+    return this.indexComponent.totalFilteredPostsCount ? this.indexComponent.totalFilteredPostsCount : 0;
   }
 
   formatImage(img: any): any {
@@ -267,7 +263,8 @@ export class SearchFilterComponent implements OnInit{
   }
 
   private loadFilteredPosts() {
-    this.indexComponent.loadPostsByParameters(this.httpParams);
+    this.indexComponent.isSearchByFilteredParameters = true;
+    this.indexComponent.loadPostsByParameters(this.filteredHttpParams);
   }
 
   private loadTransportParametersFilteredBySomeParameters() {
@@ -281,12 +278,12 @@ export class SearchFilterComponent implements OnInit{
          this.transportParameters.forEach(value1 => {
            transportIdArray.push(value1.id);
          });
-         this.httpParams.set("transportParametersId", transportIdArray);
+         this.filteredHttpParams.set("transportParametersId", transportIdArray);
          this.loadFilteredPosts();
          console.log(this.transportParameters);
        }, error => {
          console.log("getAllTransportParametersByHttpParameters error");
-         this.httpParams.set("transportParametersId", [0]);
+         this.filteredHttpParams.set("transportParametersId", [0]);
          this.loadFilteredPosts();
        });
   }

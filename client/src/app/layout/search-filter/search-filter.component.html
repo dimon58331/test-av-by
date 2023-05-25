@@ -77,8 +77,7 @@
           </mat-option>
           <mat-option value="option" *ngFor="let startReleaseYear of releaseYears"
                       [disabled]="getSelectedOrDefaultEndReleaseYear() < startReleaseYear"
-                      (click)="startReleaseYearSelected(startReleaseYear);
-                               addStartReleaseYearToHttpParameters(startReleaseYear)">
+                      (click)="addStartReleaseYearToHttpParameters(startReleaseYear)">
             {{startReleaseYear}}
           </mat-option>
         </mat-select>
@@ -93,8 +92,7 @@
             None
           </mat-option>
           <mat-option value="option" *ngFor="let endReleaseYear of releaseYears"
-                      (click)="endReleaseYearSelected(endReleaseYear);
-                               addEndReleaseYearToHttpParameters(endReleaseYear)"
+                      (click)="addEndReleaseYearToHttpParameters(endReleaseYear)"
                       [disabled]="getSelectedOrDefaultStartReleaseYear() > endReleaseYear">
             {{endReleaseYear}}
           </mat-option>
@@ -149,9 +147,9 @@
   </tr>
   <tr>
     <div class="example-button-row">
-      <button mat-raised-button color="primary" (click)="showPosts()">
+      <button mat-raised-button color="primary" (click)="showFilteredPosts()">
         <div>
-          Show {{showPostsCount()}} posts
+          Show {{showFilteredPostsCount()}} posts
         </div>
       </button>
     </div>

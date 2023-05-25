@@ -19,10 +19,6 @@ export class PostService {
 
   public getAllPostsByParameters(httpParameters: Map<string, Array<number>>): Observable<any> {
     let httpParams = new HttpParams();
-    if (!httpParameters.get("page") && !httpParameters.get("size")) {
-      httpParameters.set("page", [0]);
-      httpParameters.set("size", [25]);
-    }
 
     httpParameters.forEach((value, key) => {
       httpParams = httpParams.append(key, value.toString());
