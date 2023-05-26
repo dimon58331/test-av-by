@@ -13,10 +13,12 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { NavigationComponent } from './layout/navigation/navigation.component';
 import { IndexComponent } from './layout/index/index.component';
-import { ProfileComponent } from './layout/profile/profile.component';
+import { ProfileComponent } from './user/profile/profile.component';
 import { SearchFilterComponent } from './layout/search-filter/search-filter.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { UserPostsComponent } from './user/user-posts/user-posts.component';
+import { AddPostComponent } from './user/add-post/add-post.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     NavigationComponent,
     IndexComponent,
     ProfileComponent,
-    SearchFilterComponent
+    SearchFilterComponent,
+    UserPostsComponent,
+    AddPostComponent
   ],
   imports: [
     BrowserModule,

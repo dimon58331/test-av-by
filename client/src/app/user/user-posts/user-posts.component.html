@@ -1,0 +1,34 @@
+<div *ngIf="isPostsLoaded && isUserLoaded" class="index-page">
+  <mat-card class="post-card" *ngFor="let post of posts; let i = index">
+    <mat-card-header style="text-align: left">
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>
+        {{post.title}}
+      </mat-card-title>
+    </mat-card-header>
+    <img mat-card-image [src]="formatImage(post.image) ||
+    'https://thumbs.dreamstime.com/b/car-line-drawing-sedan-transportation-vehicle-outline-side-view-website-icon-template-branding-advertising-isolated-vector-203947269.jpg'" alt="post image" class="post-image"/>
+    <mat-card-subtitle >Posted by {{post.user?.firstname}}</mat-card-subtitle>
+    <mat-card-content>
+      <p>Caption: {{post.caption}}</p>
+      <p>Price: {{post.price}}$</p>
+      <div>
+        <p>Parameters:</p>
+        <p>Brand: {{post.transportParameters?.generationTransport?.transportModel?.transportBrand?.brandName}}</p>
+        <p>Model: {{post.transportParameters?.generationTransport?.transportModel?.modelName}}</p>
+        <p>Generation: {{post.transportParameters?.generationTransport?.generationName}}</p>
+        <p>Engine type: {{post.transportParameters?.typeEngine}}</p>
+        <p>Body type: {{post.transportParameters?.bodyType}}</p>
+        <p>Transmission type: {{post.transportParameters?.transmissionType}}</p>
+        <p>Release year: {{post.transportParameters?.releaseYear}}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-paginator [length]="totalPostsCount"
+                 [pageSize]="1"
+                 [pageSizeOptions]="[1, 3, 5]"
+                 (page)="toNextOrPreviousPage($event)"
+                 aria-label="Select page">
+  </mat-paginator>
+</div>

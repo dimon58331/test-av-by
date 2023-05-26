@@ -1,0 +1,25 @@
+<div *ngIf="isUserDataLoaded" class="user-profile">
+
+  <h1>Profile</h1>
+  <div style="padding-top: 2rem" class="row">
+    <div class="col" style="text-align: left">
+      <h2>{{user.email}}</h2>
+      <h3 style="font-style: italic">{{user.firstname}} {{user.lastname}}</h3>
+    </div>
+  </div>
+
+  <div>
+    <mat-divider style="margin-top: 1rem"></mat-divider>
+  </div>
+
+  <div class="my-button">
+    <div style="margin-left: 1rem">
+      <button mat-flat-button color="primary" (click)="openAddPostDialog()">Add post</button>
+    </div>
+  </div>
+
+  <div>
+    <mat-divider style="margin-bottom: 1rem"></mat-divider>
+  </div>
+</div>
+<router-outlet></router-outlet>

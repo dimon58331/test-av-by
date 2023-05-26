@@ -17,7 +17,6 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,10 +107,10 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException("Post not found")));
     }
 
-    public Page<Post> getAllPosts(int page, int size) {
-        List<Post> allPosts = postRepository.findAllByOrderByCreatedDateDesc();
-        return new PageImpl<>(allPosts, PageRequest.of(page, size), allPosts.size());
-    }
+//    public Page<Post> getAllPosts(int page, int size) {
+//        List<Post> allPosts = postRepository.findAllByOrderByCreatedDateDesc();
+//        return new PageImpl<>(allPosts, PageRequest.of(page, size), allPosts.size());
+//    }
 
     public Page<Post> getAllPostsByParameters(Integer page, Integer size, Double minPrice, Double maxPrice, Integer brandId,
                                               Long modelId, Long generationTransportId, List<Long> transportParametersId) {
